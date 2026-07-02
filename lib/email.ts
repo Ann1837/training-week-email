@@ -48,6 +48,10 @@ export async function sendTrainingEmail(payload: EmailPayload) {
     text: email.text
   });
 
+  if (result.error) {
+    throw new Error(`Resend: ${result.error.message}`);
+  }
+
   return { ...email, result };
 }
 
