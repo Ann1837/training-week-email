@@ -103,15 +103,16 @@ export default function Home() {
     setStatus("");
     setError("");
     try {
-      const saved = await savePlan();
-      if (!saved) return;
+      if (adminSecret) {
+        window.localStorage.setItem("training-admin-secret", adminSecret);
+      }
       const response = await fetch("/api/send-today", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           ...(adminSecret ? { "X-Admin-Secret": adminSecret } : {})
         },
-        body: JSON.stringify({ dayKey: activeDay })
+        body: JSON.stringify({ dayKey: activeDay, plan })
       });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));

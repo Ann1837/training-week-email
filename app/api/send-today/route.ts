@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server";
 import { hasValidAdminSecret } from "@/lib/auth";
 import { buildTodayEmail, sendTrainingEmail } from "@/lib/email";
-import { readWeeklyPlan } from "@/lib/plan-store";
-import { WeekdayKey } from "@/lib/types";
+import { readWeeklyPlan, validatePlan } from "@/lib/plan-store";
+import { WeekdayKey, WeeklyPlan } from "@/lib/types";
 
 export async function POST(request: Request) {
   try {
-    const plan = await readWeeklyPlan();
     const body = (await request.json().catch(() => ({}))) as {
       dryRun?: boolean;
       dayKey?: WeekdayKey;
+      plan?: WeeklyPlan;
     };
+    const plan = body.plan ?? (await readWeeklyPlan());
+
+    if (body.plan) {
+      validatePlan(plan);
+    }
 
     if (body.dryRun) {
       const email = buildTodayEmail({ plan, dayKey: body.dayKey });

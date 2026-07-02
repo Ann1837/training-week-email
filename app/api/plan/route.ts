@@ -14,7 +14,25 @@ export async function PUT(request: Request) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
-  const plan = await request.json();
-  await writeWeeklyPlan(plan);
-  return NextResponse.json({ ok: true, plan });
+  try {
+    const plan = await request.json();
+    await writeWeeklyPlan(plan);
+    return NextResponse.json({ ok: true, plan });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Kunde inte spara planen.";
+    const isReadonlyFileSystem =
+      message.includes("EROFS") ||
+      message.includes("read-only") ||
+      Boolean(process.env.VERCEL);
+
+    return NextResponse.json(
+      {
+        ok: false,
+        error: isReadonlyFileSystem
+          ? "Vercel kan inte spara ändringar till JSON-filen. Ändra data/weekly-plan.json i GitHub och redeploya för permanenta ändringar."
+          : message
+      },
+      { status: isReadonlyFileSystem ? 409 : 500 }
+    );
+  }
 }

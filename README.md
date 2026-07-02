@@ -295,4 +295,6 @@ You can edit `data/weekly-plan.json` directly if needed. Each day supports:
 
 On platforms with ephemeral filesystems, changes made through the admin page may not persist across deploys or restarts. For a $0 setup, treat the JSON file in the repo as the durable source of truth and redeploy when you want durable weekly-plan changes. For a durable production editor later, move `data/weekly-plan.json` to a small database, object storage, or a hosted key-value store. The rest of the app is structured so that only `lib/plan-store.ts` needs to change.
 
+On Vercel Hobby, the `Spara` button cannot permanently write to `data/weekly-plan.json`. For permanent weekly-plan changes, edit `data/weekly-plan.json` in GitHub or locally, commit, push, and let Vercel redeploy. The `Testmail` button can still send the plan currently visible on screen without saving it first.
+
 The deployed admin page is public, but save and real test-email sends are protected by `ADMIN_SECRET` when configured. Do not share the production URL broadly.

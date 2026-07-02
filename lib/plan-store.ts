@@ -15,7 +15,7 @@ export async function writeWeeklyPlan(plan: WeeklyPlan) {
   await fs.writeFile(planPath, `${JSON.stringify(plan, null, 2)}\n`, "utf8");
 }
 
-function validatePlan(plan: WeeklyPlan) {
+export function validatePlan(plan: WeeklyPlan) {
   if (!plan.owner || !plan.timezone || !plan.days) {
     throw new Error("Planen saknar owner, timezone eller days.");
   }
