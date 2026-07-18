@@ -4,10 +4,6 @@
     {
       "path": "/api/cron",
       "schedule": "0 5 * * *"
-    },
-    {
-      "path": "/api/bryan-weekly",
-      "schedule": "0 17 * * 0"
     }
   ]
 }

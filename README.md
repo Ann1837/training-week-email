@@ -19,7 +19,8 @@ This version is designed to run on free-tier services:
 - Include a unique daily surprise exercise that fits the day's workout
 - Expose a real scheduled email endpoint at `/api/cron`
 - Send a Sunday evening Bryan Johnson weekly digest from open public sources
-- Include Vercel Hobby-compatible cron jobs for daily training and weekly Bryan digest emails
+- Include a Vercel Hobby-compatible cron job for the daily training email
+- Include a free external weekly trigger option for the Bryan Johnson Sunday digest
 - Use `Europe/Stockholm` as the training timezone
 
 ## Daily Surprise Exercise
@@ -42,6 +43,22 @@ It sends Ann a short Swedish weekly email on Sunday evening with Bryan Johnson's
 - Bryan's public posts page as a best-effort fallback when it responds
 
 It does not use OpenAI, GLM, DuckDuckGo, paid search, paid scraping, or any AI API. The digest is a lightweight link-and-title summary, which keeps the project free and avoids surprise usage.
+
+To keep Vercel Hobby safe, the Bryan digest is not added as a second Vercel Cron entry. Instead, use a free external HTTP scheduler such as `cron-job.org` to call the route once per week:
+
+```text
+https://your-domain.com/api/bryan-weekly?secret=your-cron-secret
+```
+
+Recommended cron-job.org settings:
+
+- Method: `GET`
+- URL: `https://your-domain.com/api/bryan-weekly?secret=your-cron-secret`
+- Schedule timezone: `Europe/Stockholm`
+- Day: Sunday
+- Time: 19:00
+
+The route also checks that the local Stockholm hour is 19 on Sunday before sending.
 
 ## Setup
 
@@ -152,7 +169,7 @@ TRAINING_EMAIL_FROM=Training Briefing <training@yourdomain.com>
 
 ## Cron Configuration
 
-`vercel.json` is configured with two low-frequency cron jobs:
+`vercel.json` is configured with one Vercel Hobby cron job:
 
 ```json
 {
@@ -161,21 +178,17 @@ TRAINING_EMAIL_FROM=Training Briefing <training@yourdomain.com>
     {
       "path": "/api/cron",
       "schedule": "0 5 * * *"
-    },
-    {
-      "path": "/api/bryan-weekly",
-      "schedule": "0 17 * * 0"
     }
   ]
 }
 ```
 
 Vercel cron schedules are UTC. Stockholm is UTC+2 during Swedish summer time, so `0 5 * * *` triggers during the 07:00 Stockholm hour in summer.
-The Bryan Johnson digest uses `0 17 * * 0`, which is Sunday 19:00 Stockholm during Swedish summer time.
+The Bryan Johnson digest should be scheduled separately in cron-job.org at Sunday 19:00 Europe/Stockholm.
 
 For Vercel Hobby/free-tier use:
 
-- Keep only these two cron entries in `vercel.json`.
+- Keep only the daily training cron entry in `vercel.json`.
 - Do not add frequent cron jobs or polling.
 - The route checks the Stockholm local hour and skips if it is not 07.
 - Vercel Hobby may invoke the job at any point within the scheduled hour, so the email may arrive sometime during 07:00-07:59 Stockholm time.
@@ -186,12 +199,9 @@ You need to change the cron expression twice per year if you stay on Vercel Hobb
 - Summer time, CEST, UTC+2: `0 5 * * *`
 - Winter time, CET, UTC+1: `0 6 * * *`
 
-For the Bryan Johnson Sunday digest:
+The Bryan Johnson Sunday digest can use cron-job.org with `Europe/Stockholm` timezone, so it does not need manual daylight-saving changes.
 
-- Summer time, CEST, UTC+2: `0 17 * * 0`
-- Winter time, CET, UTC+1: `0 18 * * 0`
-
-This avoids a paid Vercel plan and keeps the app low-usage. Most days only the training cron runs; Sundays also have the Bryan digest in the evening. The tradeoff is that daylight-saving changes are manual.
+This avoids a paid Vercel plan and keeps the app low-usage. Most days only the training cron runs; Sundays also have one external free trigger for the Bryan digest.
 
 Vercel automatically sends the `CRON_SECRET` value as a Bearer authorization header when it invokes the cron route.
 
@@ -261,7 +271,8 @@ This project is intended to stay on free-tier services only.
 
 Services used:
 
-- Vercel: hosts the Next.js app and runs the daily training cron plus one weekly Bryan digest cron.
+- Vercel: hosts the Next.js app and runs the daily training cron.
+- cron-job.org: optionally triggers the Bryan Johnson Sunday digest once per week.
 - Resend: sends the daily training email.
 - Public Bryan Johnson/YouTube pages: read once per weekly digest.
 - GitHub, optional but recommended: stores the repo so Vercel can deploy it.
@@ -280,7 +291,8 @@ Credit card:
 
 How to avoid charges:
 
-- Keep only the daily training cron and the weekly Sunday Bryan cron in `vercel.json`.
+- Keep only the daily training cron in `vercel.json`.
+- Put the Bryan Johnson digest in cron-job.org, once per week only.
 - Do not add background jobs that poll more often than once per day.
 - Keep `ADMIN_SECRET` set so strangers cannot trigger real test emails.
 - Keep `CRON_SECRET` set so only Vercel's cron or your signed manual test can call `/api/cron`.
