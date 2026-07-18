@@ -18,7 +18,8 @@ This version is designed to run on free-tier services:
 - Send a manual test email from the admin page
 - Include a unique daily surprise exercise that fits the day's workout
 - Expose a real scheduled email endpoint at `/api/cron`
-- Include one Vercel Hobby-compatible cron job
+- Send a Sunday evening Bryan Johnson weekly digest from open public sources
+- Include Vercel Hobby-compatible cron jobs for daily training and weekly Bryan digest emails
 - Use `Europe/Stockholm` as the training timezone
 
 ## Daily Surprise Exercise
@@ -26,6 +27,21 @@ This version is designed to run on free-tier services:
 Each day can include a `surpriseExercise` field. This is shown in the daily email as "Dagens extra övning".
 
 To keep the project free-tier only, the app does not call an AI API, OpenAI, GLM, DuckDuckGo, or any external search service every morning. Instead, the surprise exercises are curated into `data/weekly-plan.json` when the weekly plan is updated. That gives the email a personal touch without API keys, live web requests, rate limits, or surprise costs.
+
+## Bryan Johnson Sunday Digest
+
+The Sunday digest lives in:
+
+```text
+app/api/bryan-weekly/route.ts
+```
+
+It sends Ann a short Swedish weekly email on Sunday evening with Bryan Johnson's latest public posts from free/open sources. It currently uses:
+
+- Bryan Johnson's public YouTube RSS feed
+- Bryan's public posts page as a best-effort fallback when it responds
+
+It does not use OpenAI, GLM, DuckDuckGo, paid search, paid scraping, or any AI API. The digest is a lightweight link-and-title summary, which keeps the project free and avoids surprise usage.
 
 ## Setup
 
@@ -136,7 +152,7 @@ TRAINING_EMAIL_FROM=Training Briefing <training@yourdomain.com>
 
 ## Cron Configuration
 
-`vercel.json` is configured with one cron job:
+`vercel.json` is configured with two low-frequency cron jobs:
 
 ```json
 {
@@ -145,17 +161,22 @@ TRAINING_EMAIL_FROM=Training Briefing <training@yourdomain.com>
     {
       "path": "/api/cron",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/bryan-weekly",
+      "schedule": "0 17 * * 0"
     }
   ]
 }
 ```
 
 Vercel cron schedules are UTC. Stockholm is UTC+2 during Swedish summer time, so `0 5 * * *` triggers during the 07:00 Stockholm hour in summer.
+The Bryan Johnson digest uses `0 17 * * 0`, which is Sunday 19:00 Stockholm during Swedish summer time.
 
 For Vercel Hobby/free-tier use:
 
-- Keep exactly one cron entry in `vercel.json`.
-- Do not add a second Vercel cron entry.
+- Keep only these two cron entries in `vercel.json`.
+- Do not add frequent cron jobs or polling.
 - The route checks the Stockholm local hour and skips if it is not 07.
 - Vercel Hobby may invoke the job at any point within the scheduled hour, so the email may arrive sometime during 07:00-07:59 Stockholm time.
 - The app schedules only one automatic send per day. Absolute duplicate-proof delivery would require durable storage to record sent days; that is intentionally not included in the $0 setup.
@@ -165,7 +186,12 @@ You need to change the cron expression twice per year if you stay on Vercel Hobb
 - Summer time, CEST, UTC+2: `0 5 * * *`
 - Winter time, CET, UTC+1: `0 6 * * *`
 
-This avoids a paid Vercel plan and keeps the app to one scheduled invocation per day. The tradeoff is that daylight-saving changes are manual.
+For the Bryan Johnson Sunday digest:
+
+- Summer time, CEST, UTC+2: `0 17 * * 0`
+- Winter time, CET, UTC+1: `0 18 * * 0`
+
+This avoids a paid Vercel plan and keeps the app low-usage. Most days only the training cron runs; Sundays also have the Bryan digest in the evening. The tradeoff is that daylight-saving changes are manual.
 
 Vercel automatically sends the `CRON_SECRET` value as a Bearer authorization header when it invokes the cron route.
 
@@ -212,14 +238,32 @@ curl -fsS -X POST "https://your-domain.com/api/send-today" \
   -d '{"dayKey":"monday"}'
 ```
 
+Previewing the Bryan Johnson digest without sending:
+
+```bash
+curl -fsS -X POST "https://your-domain.com/api/bryan-weekly" \
+  -H "Content-Type: application/json" \
+  -d '{"dryRun":true}'
+```
+
+Sending a real Bryan Johnson digest manually:
+
+```bash
+curl -fsS -X POST "https://your-domain.com/api/bryan-weekly" \
+  -H "Content-Type: application/json" \
+  -H "X-Admin-Secret: your-admin-secret" \
+  -d '{}'
+```
+
 ## COST SAFETY
 
 This project is intended to stay on free-tier services only.
 
 Services used:
 
-- Vercel: hosts the Next.js app and runs one daily cron request.
+- Vercel: hosts the Next.js app and runs the daily training cron plus one weekly Bryan digest cron.
 - Resend: sends the daily training email.
+- Public Bryan Johnson/YouTube pages: read once per weekly digest.
 - GitHub, optional but recommended: stores the repo so Vercel can deploy it.
 
 Free plans required:
@@ -236,14 +280,15 @@ Credit card:
 
 How to avoid charges:
 
-- Keep only one cron entry in `vercel.json`.
-- Do not add background jobs more often than once per day.
+- Keep only the daily training cron and the weekly Sunday Bryan cron in `vercel.json`.
+- Do not add background jobs that poll more often than once per day.
 - Keep `ADMIN_SECRET` set so strangers cannot trigger real test emails.
 - Keep `CRON_SECRET` set so only Vercel's cron or your signed manual test can call `/api/cron`.
 - Add `RESEND_API_KEY` only to Vercel `Production`, not `Preview`, unless you intentionally want preview deployments to send real email.
 - Do not enable Vercel Pro, paid analytics, paid observability, paid storage, paid deployment protection, paid databases, Vercel AI, Vercel Workflows, Vercel Queues, or any paid add-on.
 - Do not add an OpenAI API key. This app does not need one.
 - Do not add GLM, DuckDuckGo, or other AI/search API keys unless you deliberately change the app later. Surprise exercises are stored in the weekly JSON plan for $0 operation.
+- Do not add paid search/scraping APIs for the Bryan Johnson digest. It uses free public feeds/pages only.
 - Keep manual test sends low. Every click on `Testmail` sends a real email.
 - Watch Resend usage after deployment and stay under the free daily email limit.
 - If you add durable plan storage later, choose a free option deliberately before changing `lib/plan-store.ts`.
@@ -251,7 +296,7 @@ How to avoid charges:
 What to disable if you stop using the project:
 
 - In Vercel, disable or delete the project.
-- In Vercel, remove the cron job by deleting the `crons` entry from `vercel.json` and redeploying, or disable Cron Jobs in the project settings.
+- In Vercel, remove the cron jobs by deleting the `crons` entry from `vercel.json` and redeploying, or disable Cron Jobs in the project settings.
 - In Vercel, remove `RESEND_API_KEY`, `CRON_SECRET`, and `ADMIN_SECRET` from Environment Variables.
 - In Resend, revoke the API key used by this app.
 - In Resend, check usage and make sure no unexpected sends are happening.
@@ -283,6 +328,9 @@ If Resend rejects the sender, verify the domain used by `TRAINING_EMAIL_FROM`.
 - `POST /api/send-today` sends a manual test email and requires `ADMIN_SECRET` when configured
 - `POST /api/send-today` with `{ "dryRun": true }` returns the generated email without sending
 - `GET /api/cron` sends the scheduled daily email when the Stockholm local hour is 07
+- `GET /api/bryan-weekly` sends the scheduled Sunday Bryan Johnson digest when the Stockholm local hour is 19
+- `POST /api/bryan-weekly` sends a manual Bryan Johnson digest and requires `ADMIN_SECRET`
+- `POST /api/bryan-weekly` with `{ "dryRun": true }` previews the digest without sending
 
 ## Editing The Plan Manually
 
