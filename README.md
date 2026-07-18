@@ -16,9 +16,16 @@ This version is designed to run on free-tier services:
 - Store the plan in `data/weekly-plan.json`
 - Send only today's plan by email
 - Send a manual test email from the admin page
+- Include a unique daily surprise exercise that fits the day's workout
 - Expose a real scheduled email endpoint at `/api/cron`
 - Include one Vercel Hobby-compatible cron job
 - Use `Europe/Stockholm` as the training timezone
+
+## Daily Surprise Exercise
+
+Each day can include a `surpriseExercise` field. This is shown in the daily email as "Dagens extra övning".
+
+To keep the project free-tier only, the app does not call an AI API, OpenAI, GLM, DuckDuckGo, or any external search service every morning. Instead, the surprise exercises are curated into `data/weekly-plan.json` when the weekly plan is updated. That gives the email a personal touch without API keys, live web requests, rate limits, or surprise costs.
 
 ## Setup
 
@@ -236,6 +243,7 @@ How to avoid charges:
 - Add `RESEND_API_KEY` only to Vercel `Production`, not `Preview`, unless you intentionally want preview deployments to send real email.
 - Do not enable Vercel Pro, paid analytics, paid observability, paid storage, paid deployment protection, paid databases, Vercel AI, Vercel Workflows, Vercel Queues, or any paid add-on.
 - Do not add an OpenAI API key. This app does not need one.
+- Do not add GLM, DuckDuckGo, or other AI/search API keys unless you deliberately change the app later. Surprise exercises are stored in the weekly JSON plan for $0 operation.
 - Keep manual test sends low. Every click on `Testmail` sends a real email.
 - Watch Resend usage after deployment and stay under the free daily email limit.
 - If you add durable plan storage later, choose a free option deliberately before changing `lib/plan-store.ts`.
@@ -288,6 +296,7 @@ You can edit `data/weekly-plan.json` directly if needed. Each day supports:
 - `recovery`
 - `heatSun`
 - `reminders`
+- `surpriseExercise`
 - `heavyLegs`
 - `intervals`
 

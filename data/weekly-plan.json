@@ -11,6 +11,7 @@
       "recovery": "Håll benen pigga inför tisdagens intervaller och glute-pass.",
       "heatSun": "",
       "reminders": "Ingen sen hård benträning. Prioritera sömn och återhämtning.",
+      "surpriseExercise": "Scapular push-ups 2 x 10-12. Perfekt före push för att väcka skulderbladen och få bättre presskänsla.",
       "heavyLegs": false,
       "intervals": false
     },
@@ -23,6 +24,7 @@
       "recovery": "Fyll på med mat, vätska och lugn kväll. Benen ska kunna svara resten av veckan.",
       "heatSun": "Om varmt: sänk fartkravet, fokusera på jämn ansträngning och drick extra.",
       "reminders": "Undvik sen hård benträning eftersom det kan försämra sömn och återhämtning.",
+      "surpriseExercise": "Banded lateral walks 2 x 12-15 steg/sida. Lätt aktivering för glute medius utan att sabba intervallbenen.",
       "heavyLegs": true,
       "intervals": true
     },
@@ -35,6 +37,7 @@
       "recovery": "Var snäll mot kroppen efter tisdagens intervaller. Prioritera mat och sömn.",
       "heatSun": "",
       "reminders": "Ingen extra benvolym idag. Låt underkroppen återhämta sig.",
+      "surpriseExercise": "Prone Y-raises 2 x 10-12. Liten men vass övning för baksida axel/skulderkontroll efter pull/push.",
       "heavyLegs": false,
       "intervals": false
     },
@@ -47,6 +50,7 @@
       "recovery": "Håll passet effektivt och lämna energi kvar till fredag och långpasset.",
       "heatSun": "",
       "reminders": "Undvik sen hård benträning. Hemmapasset ska kännas som underhåll, inte urladdning.",
+      "surpriseExercise": "Copenhagen plank short lever 2 x 20-30 sek/sida. Stabilitet för höft/ljumske som passar löpare.",
       "heavyLegs": false,
       "intervals": false
     },
@@ -59,6 +63,7 @@
       "recovery": "Avsluta fräsch. Långpasset är helgens viktigaste löppass.",
       "heatSun": "",
       "reminders": "Ingen sen tung benträning. Glute/core ska inte störa sömnen eller långpasset.",
+      "surpriseExercise": "Heel-elevated glute bridge hold 2 x 30-40 sek. Bränner smart utan att behöva bli tungt.",
       "heavyLegs": true,
       "intervals": false
     },
@@ -71,6 +76,7 @@
       "recovery": "Fyll på med vätska, salt och mat efteråt. Ta det lugnt med benen resten av dagen.",
       "heatSun": "Om varmt eller soligt: starta tidigare, sänk tempot och korta vid behov.",
       "reminders": "Inget sent hårt benpass efter långpass.",
+      "surpriseExercise": "Ankle rocks 2 x 10/ben efter passet. Mjuk fotledsrörlighet som hjälper steget utan extra trötthet.",
       "heavyLegs": false,
       "intervals": false
     },
@@ -83,6 +89,7 @@
       "recovery": "Låt passet hjälpa kroppen in i nästa vecka. Sluta med lite kvar i tanken.",
       "heatSun": "",
       "reminders": "Ingen sen hård benträning. Skydda sömn och återhämtning.",
+      "surpriseExercise": "Wall slides 2 x 8-10. Enkel skuldermobilitet som passar söndagens överkropp hemma.",
       "heavyLegs": false,
       "intervals": false
     }

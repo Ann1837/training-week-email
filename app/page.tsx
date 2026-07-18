@@ -29,6 +29,7 @@ const emptyPlan: WeeklyPlan = {
         recovery: "",
         heatSun: "",
         reminders: "",
+        surpriseExercise: "",
         heavyLegs: false,
         intervals: false
       }
@@ -246,6 +247,11 @@ export default function Home() {
                 onChange={(value) => updateDay("reminders", value)}
               />
             </div>
+            <TextArea
+              label="Dagens extra övning"
+              value={day.surpriseExercise}
+              onChange={(value) => updateDay("surpriseExercise", value)}
+            />
             <div className="toggle-row">
               <label className="toggle">
                 <input
@@ -275,6 +281,7 @@ export default function Home() {
               <PreviewRow icon="📈" label="Intensitet" value={day.intensity} />
               <PreviewRow icon="🧘" label="Återhämtning" value={day.recovery} />
               <PreviewRow icon="☀️" label="Värme/sol" value={day.heatSun} />
+              <PreviewRow icon="🎁" label="Dagens extra övning" value={day.surpriseExercise} />
               <PreviewRow icon="🔔" label="Påminnelse" value={day.reminders} />
               {warnings.length ? (
                 <div className="warning">

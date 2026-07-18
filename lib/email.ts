@@ -80,6 +80,7 @@ function buildText({
     day.intensity ? `📈 Intensitet: ${day.intensity}` : "",
     day.recovery ? `🧘 Återhämtning: ${day.recovery}` : "",
     day.heatSun ? `☀️ Värme/sol: ${day.heatSun}` : "",
+    day.surpriseExercise ? `🎁 Dagens extra övning: ${day.surpriseExercise}` : "",
     day.reminders ? `🔔 Påminnelse: ${day.reminders}` : "",
     ...warnings,
     "🌙 Undvik sen hård benträning - det kan försämra sömn och återhämtning."
@@ -108,6 +109,7 @@ function buildHtml({
     ["📈", "Intensitet", day.intensity],
     ["🧘", "Återhämtning", day.recovery],
     ["☀️", "Värme/sol", day.heatSun],
+    ["🎁", "Dagens extra övning", day.surpriseExercise],
     ["🔔", "Påminnelse", day.reminders]
   ].filter(([, , value]) => value);
 

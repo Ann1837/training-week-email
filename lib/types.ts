@@ -16,6 +16,7 @@ export type DayPlan = {
   recovery: string;
   heatSun: string;
   reminders: string;
+  surpriseExercise: string;
   heavyLegs: boolean;
   intervals: boolean;
 };
