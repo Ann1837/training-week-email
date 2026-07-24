@@ -10,12 +10,14 @@ type HannaPayload = {
 
 type HannaWeek = {
   title: string;
+  sendOn: string;
   days: string[];
 };
 
 const hannaPlan: HannaWeek[] = [
   {
     title: "Vecka 1 (4-10 augusti)",
+    sendOn: "2026-08-02",
     days: [
       "Måndag: Gym",
       "Tisdag: 6 km lugn distans (zon 2)",
@@ -28,6 +30,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Vecka 2 (11-17 augusti)",
+    sendOn: "2026-08-09",
     days: [
       "Måndag: Gym",
       "Tisdag: 7 km lugn distans",
@@ -40,6 +43,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Vecka 3 (18-24 augusti)",
+    sendOn: "2026-08-16",
     days: [
       "Måndag: Gym",
       "Tisdag: 8 km lugn distans",
@@ -52,6 +56,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Vecka 4 (25-31 augusti)",
+    sendOn: "2026-08-23",
     days: [
       "Måndag: Gym",
       "Tisdag: 6 km lugn distans",
@@ -64,6 +69,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Vecka 5 (1-7 september)",
+    sendOn: "2026-08-30",
     days: [
       "Måndag: Lätt gym",
       "Tisdag: 6 km lugn distans",
@@ -76,6 +82,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Tävlingsvecka (8-13 september)",
+    sendOn: "2026-09-06",
     days: [
       "Måndag: Vila eller promenad",
       "Tisdag: 5 km lugnt + 4 strides",
@@ -90,11 +97,14 @@ const hannaPlan: HannaWeek[] = [
 
 export function buildHannaWeeklyEmail({ now = new Date() }: HannaPayload = {}) {
   const dateLabel = getTodayInTimezone(TIMEZONE, now).dateLabel;
-  const subject = `Hannas marathonplan - ${dateLabel}`;
-  const text = buildText(dateLabel);
-  const html = buildHtml(dateLabel);
+  const week = getHannaWeekForSendDate(now) ?? getNextHannaWeek(now);
+  const subject = week
+    ? `Hannas marathonplan: ${week.title}`
+    : `Hannas marathonplan - ingen plan denna vecka`;
+  const text = buildText(dateLabel, week);
+  const html = buildHtml(dateLabel, week);
 
-  return { subject, text, html, weeks: hannaPlan };
+  return { subject, text, html, week };
 }
 
 export async function sendHannaWeeklyEmail(payload: HannaPayload = {}) {
@@ -127,26 +137,54 @@ export function shouldSendHannaWeeklyEmail(now = new Date()) {
   const today = getTodayInTimezone(TIMEZONE, now);
   const localHour = getHourInTimezone(TIMEZONE, now);
 
-  return today.weekdayKey === "sunday" && localHour === 16;
+  return today.weekdayKey === "sunday" && localHour === 16 && Boolean(getHannaWeekForSendDate(now));
 }
 
-function buildText(dateLabel: string) {
+function getHannaWeekForSendDate(now: Date) {
+  const sendDate = getDateKeyInTimezone(now);
+  return hannaPlan.find((week) => week.sendOn === sendDate);
+}
+
+function getNextHannaWeek(now: Date) {
+  const today = getDateKeyInTimezone(now);
+  return hannaPlan.find((week) => week.sendOn >= today);
+}
+
+function getDateKeyInTimezone(now: Date) {
+  const parts = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(now);
+  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function buildText(dateLabel: string, week?: HannaWeek) {
+  if (!week) {
+    return [
+      "Hej Hanna!",
+      "",
+      `🏃 Marathonplan - ${dateLabel}`,
+      "Det finns ingen plan schemalagd för kommande vecka."
+    ].join("\n");
+  }
+
   return [
     "Hej Hanna!",
     "",
-    `🏃 Marathonplan - ${dateLabel}`,
-    "Här kommer planen fram till Tallinn Marathon.",
+    `🏃 Marathonplan - ${week.title}`,
+    `Datum: ${dateLabel}. Här kommer kommande veckas plan.`,
     "",
-    ...hannaPlan.flatMap((week) => [
-      week.title,
-      ...week.days.map((day) => `• ${day}`),
-      ""
-    ]),
+    ...week.days.map((day) => `• ${day}`),
+    "",
     "Lycka till med passen!"
   ].join("\n");
 }
 
-function buildHtml(dateLabel: string) {
+function buildHtml(dateLabel: string, week?: HannaWeek) {
   return `<!doctype html>
 <html lang="sv">
   <body style="margin:0;background:#f5f2ed;color:#1e2422;font-family:Arial,Helvetica,sans-serif;">
@@ -154,19 +192,18 @@ function buildHtml(dateLabel: string) {
       <section style="background:#ffffff;border:1px solid #ddd6cb;border-radius:8px;padding:24px;">
         <p style="margin:0 0 12px;font-size:16px;">Hej Hanna!</p>
         <p style="margin:0;color:#66706b;font-size:14px;">📅 ${escapeHtml(dateLabel)}</p>
-        <h1 style="margin:8px 0 10px;font-size:24px;line-height:1.25;">🏃 Marathonplan</h1>
-        <p style="margin:0 0 16px;color:#38423e;">Här kommer planen fram till Tallinn Marathon.</p>
-        ${hannaPlan
-          .map(
-            (week) => `<article style="padding:14px 0;border-top:1px solid #eee5dc;">
-              <h2 style="margin:0 0 8px;font-size:18px;line-height:1.35;">${escapeHtml(week.title)}</h2>
-              <ul style="margin:0;padding-left:20px;color:#38423e;">
-                ${week.days.map((day) => `<li style="margin:5px 0;">${escapeHtml(day)}</li>`).join("")}
-              </ul>
-            </article>`
-          )
-          .join("")}
-        <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;">Lycka till med passen!</p>
+        <h1 style="margin:8px 0 10px;font-size:24px;line-height:1.25;">🏃 ${escapeHtml(week?.title ?? "Marathonplan")}</h1>
+        ${
+          week
+            ? `<p style="margin:0 0 16px;color:#38423e;">Här kommer kommande veckas plan.</p>
+              <article style="padding:14px 0;border-top:1px solid #eee5dc;">
+                <ul style="margin:0;padding-left:20px;color:#38423e;">
+                  ${week.days.map((day) => `<li style="margin:5px 0;">${escapeHtml(day)}</li>`).join("")}
+                </ul>
+              </article>
+              <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;">Lycka till med passen!</p>`
+            : `<p style="margin:0;color:#38423e;">Det finns ingen plan schemalagd för kommande vecka.</p>`
+        }
       </section>
     </main>
   </body>

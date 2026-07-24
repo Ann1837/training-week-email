@@ -19,7 +19,7 @@ This version is designed to run on free-tier services:
 - Include a unique daily surprise exercise that fits the day's workout
 - Expose a real scheduled email endpoint at `/api/cron`
 - Send a Sunday evening Bryan Johnson weekly digest from open public sources
-- Send Hanna's marathon plan every Sunday at 16:00
+- Send Hanna one upcoming marathon-plan week every Sunday at 16:00
 - Include Vercel Hobby-compatible cron jobs for the daily training email and weekly Sunday emails
 - Use `Europe/Stockholm` as the training timezone
 
@@ -54,7 +54,9 @@ The Hanna email lives in:
 app/api/hanna-weekly/route.ts
 ```
 
-It sends the full marathon plan to `hannapellk@gmail.com` every Sunday at 16:00 Europe/Stockholm. It uses the same Resend account and sender as the other emails. No extra service, paid API, database, or OpenAI usage is required.
+It sends one upcoming marathon-plan week to `hannapellk@gmail.com` every Sunday at 16:00 Europe/Stockholm. It uses the same Resend account and sender as the other emails. No extra service, paid API, database, or OpenAI usage is required.
+
+The route only sends automatically on the Sundays that have a scheduled week in `lib/hanna-plan.ts`. A manual dry-run previews the next upcoming week.
 
 If you want to change the recipient later, set this optional Vercel environment variable:
 
@@ -311,7 +313,7 @@ Services used:
 
 - Vercel: hosts the Next.js app and runs the daily training cron plus two weekly Sunday cron jobs.
 - Resend: sends the daily training email.
-- Static Hanna marathon plan: sent once per week to `hannapellk@gmail.com`.
+- Static Hanna marathon plan: one upcoming week is sent once per week to `hannapellk@gmail.com`.
 - Public Bryan Johnson/YouTube pages: read once per weekly digest.
 - GitHub, optional but recommended: stores the repo so Vercel can deploy it.
 
@@ -377,9 +379,9 @@ If Resend rejects the sender, verify the domain used by `TRAINING_EMAIL_FROM`.
 - `POST /api/send-today` sends a manual test email and requires `ADMIN_SECRET` when configured
 - `POST /api/send-today` with `{ "dryRun": true }` returns the generated email without sending
 - `GET /api/cron` sends the scheduled daily email when the Stockholm local hour is 07
-- `GET /api/hanna-weekly` sends Hanna's scheduled Sunday marathon plan when the Stockholm local hour is 16
-- `POST /api/hanna-weekly` sends Hanna's marathon plan manually and requires `ADMIN_SECRET`
-- `POST /api/hanna-weekly` with `{ "dryRun": true }` previews Hanna's email without sending
+- `GET /api/hanna-weekly` sends Hanna's scheduled Sunday week plan when the Stockholm local hour is 16
+- `POST /api/hanna-weekly` sends Hanna's next available week plan manually and requires `ADMIN_SECRET`
+- `POST /api/hanna-weekly` with `{ "dryRun": true }` previews Hanna's next available week email without sending
 - `GET /api/bryan-weekly` sends the scheduled Sunday Bryan Johnson digest when the Stockholm local hour is 19
 - `POST /api/bryan-weekly` sends a manual Bryan Johnson digest and requires `ADMIN_SECRET`
 - `POST /api/bryan-weekly` with `{ "dryRun": true }` previews the digest without sending
