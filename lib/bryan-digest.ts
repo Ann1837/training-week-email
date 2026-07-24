@@ -56,7 +56,7 @@ export async function sendBryanWeeklyDigest(payload: DigestPayload = {}) {
 export async function buildBryanWeeklyDigest({ now = new Date() }: DigestPayload = {}) {
   const dateLabel = getTodayInTimezone(TIMEZONE, now).dateLabel;
   const posts = await fetchBryanPosts(now);
-  const subject = `Bryan Johnson veckosvep - ${dateLabel}`;
+  const subject = `🟢 Bryan Johnson veckosvep - ${dateLabel}`;
   const text = buildText(posts, dateLabel);
   const html = buildHtml(posts, dateLabel);
 

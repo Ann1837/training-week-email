@@ -25,7 +25,7 @@ export function buildTodayEmail({ plan, dayKey, now = new Date() }: EmailPayload
     day.intervals ? "⚡ Intervaller idag: värm upp extra noggrant och maxa inte i onödan." : ""
   ].filter(Boolean);
 
-  const subject = `Dagens träning: ${weekday} - ${day.headline}`;
+  const subject = `🟢 Dagens träning: ${weekday} - ${day.headline}`;
   const text = buildText({ owner: plan.owner, day, weekday, dateLabel, warnings });
   const html = buildHtml({ owner: plan.owner, day, weekday, dateLabel, warnings });
 

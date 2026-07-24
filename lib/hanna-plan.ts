@@ -107,8 +107,8 @@ export function buildHannaWeeklyEmail({ now = new Date() }: HannaPayload = {}) {
   const dateLabel = getTodayInTimezone(TIMEZONE, now).dateLabel;
   const week = getHannaWeekForSendDate(now) ?? getNextHannaWeek(now);
   const subject = week
-    ? `Hannas marathonplan: ${week.title}`
-    : `Hannas marathonplan - ingen plan denna vecka`;
+    ? `🟢 Hannas marathonplan: ${week.title}`
+    : `🟢 Hannas marathonplan - ingen plan denna vecka`;
   const text = buildText(dateLabel, week);
   const html = buildHtml(dateLabel, week);
 
