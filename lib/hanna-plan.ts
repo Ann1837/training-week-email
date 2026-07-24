@@ -16,21 +16,21 @@ type HannaWeek = {
 
 const hannaPlan: HannaWeek[] = [
   {
-    title: "Vecka 1 (4-10 augusti)",
-    sendOn: "2026-08-02",
+    title: "Vecka 1 (4–10 augusti)",
+    sendOn: "2026-08-03",
     days: [
       "Måndag: Gym",
       "Tisdag: 6 km lugn distans (zon 2)",
       "Onsdag: Gym",
-      "Torsdag: 5 x 3 min intervaller (2 min joggvila)",
+      "Torsdag: 5 × 3 min intervaller (2 min joggvila)",
       "Fredag: Vila eller lätt gym",
       "Lördag: 18 km lugnt långpass",
       "Söndag: 5 km mycket lugn återhämtning"
     ]
   },
   {
-    title: "Vecka 2 (11-17 augusti)",
-    sendOn: "2026-08-09",
+    title: "Vecka 2 (11–17 augusti)",
+    sendOn: "2026-08-10",
     days: [
       "Måndag: Gym",
       "Tisdag: 7 km lugn distans",
@@ -42,21 +42,21 @@ const hannaPlan: HannaWeek[] = [
     ]
   },
   {
-    title: "Vecka 3 (18-24 augusti)",
-    sendOn: "2026-08-16",
+    title: "Vecka 3 (18–24 augusti)",
+    sendOn: "2026-08-17",
     days: [
       "Måndag: Gym",
       "Tisdag: 8 km lugn distans",
       "Onsdag: Gym",
-      "Torsdag: 6 x 4 min intervaller (2-3 min joggvila)",
+      "Torsdag: 6 × 4 min intervaller (2–3 min joggvila)",
       "Fredag: Vila",
       "Lördag: 24 km lugnt långpass",
       "Söndag: 5 km återhämtning"
     ]
   },
   {
-    title: "Vecka 4 (25-31 augusti)",
-    sendOn: "2026-08-23",
+    title: "Vecka 4 (25–31 augusti)",
+    sendOn: "2026-08-24",
     days: [
       "Måndag: Gym",
       "Tisdag: 6 km lugn distans",
@@ -68,21 +68,21 @@ const hannaPlan: HannaWeek[] = [
     ]
   },
   {
-    title: "Vecka 5 (1-7 september)",
-    sendOn: "2026-08-30",
+    title: "Vecka 5 (1–7 september)",
+    sendOn: "2026-08-31",
     days: [
       "Måndag: Lätt gym",
       "Tisdag: 6 km lugn distans",
       "Onsdag: Vila",
-      "Torsdag: 4 x 3 min intervaller",
+      "Torsdag: 4 × 3 min intervaller",
       "Fredag: Vila",
       "Lördag: 12-14 km lugnt",
       "Söndag: 5 km mycket lugnt"
     ]
   },
   {
-    title: "Tävlingsvecka (8-13 september)",
-    sendOn: "2026-09-06",
+    title: "Tävlingsvecka (8–13 september)",
+    sendOn: "2026-09-07",
     days: [
       "Måndag: Vila eller promenad",
       "Tisdag: 5 km lugnt + 4 strides",
@@ -137,7 +137,7 @@ export function shouldSendHannaWeeklyEmail(now = new Date()) {
   const today = getTodayInTimezone(TIMEZONE, now);
   const localHour = getHourInTimezone(TIMEZONE, now);
 
-  return today.weekdayKey === "sunday" && localHour === 16 && Boolean(getHannaWeekForSendDate(now));
+  return today.weekdayKey === "monday" && localHour === 16 && Boolean(getHannaWeekForSendDate(now));
 }
 
 function getHannaWeekForSendDate(now: Date) {
@@ -198,7 +198,7 @@ function buildHtml(dateLabel: string, week?: HannaWeek) {
             ? `<p style="margin:0 0 16px;color:#38423e;">Här kommer kommande veckas plan.</p>
               <article style="padding:14px 0;border-top:1px solid #eee5dc;">
                 <ul style="margin:0;padding-left:20px;color:#38423e;">
-                  ${week.days.map((day) => `<li style="margin:5px 0;">${escapeHtml(day)}</li>`).join("")}
+                  ${week.days.map((day) => `<li style="margin:5px 0;">${formatDayHtml(day)}</li>`).join("")}
                 </ul>
               </article>
               <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;">Lycka till med passen!</p>`
@@ -216,4 +216,17 @@ function escapeHtml(value: string) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function formatDayHtml(value: string) {
+  const colonIndex = value.indexOf(":");
+
+  if (colonIndex === -1) {
+    return escapeHtml(value);
+  }
+
+  const label = value.slice(0, colonIndex + 1);
+  const rest = value.slice(colonIndex + 1);
+
+  return `<strong>${escapeHtml(label)}</strong>${escapeHtml(rest)}`;
 }

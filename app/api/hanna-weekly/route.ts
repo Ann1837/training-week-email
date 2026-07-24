@@ -22,7 +22,7 @@ export async function GET(request: Request) {
       return NextResponse.json({
         ok: true,
         skipped: true,
-        reason: "Hanna-mailet skickas bara söndag kl. 16 Europe/Stockholm."
+        reason: "Hanna-mailet skickas bara måndag kl. 16 Europe/Stockholm på schemalagda datum."
       });
     }
 
