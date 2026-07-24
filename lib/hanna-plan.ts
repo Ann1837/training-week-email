@@ -18,7 +18,7 @@ type HannaWeek = {
 const hannaPlan: HannaWeek[] = [
   {
     title: "Vecka 1 (4–10 augusti)",
-    sendOn: "2026-08-03",
+    sendOn: "2026-08-02",
     days: [
       "Måndag: Gym",
       "Tisdag: 6 km lugn distans (zon 2)",
@@ -31,7 +31,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Vecka 2 (11–17 augusti)",
-    sendOn: "2026-08-10",
+    sendOn: "2026-08-09",
     days: [
       "Måndag: Gym",
       "Tisdag: 7 km lugn distans",
@@ -44,7 +44,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Vecka 3 (18–24 augusti)",
-    sendOn: "2026-08-17",
+    sendOn: "2026-08-16",
     days: [
       "Måndag: Gym",
       "Tisdag: 8 km lugn distans",
@@ -57,7 +57,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Vecka 4 (25–31 augusti)",
-    sendOn: "2026-08-24",
+    sendOn: "2026-08-23",
     days: [
       "Måndag: Gym",
       "Tisdag: 6 km lugn distans",
@@ -70,7 +70,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Vecka 5 (1–7 september)",
-    sendOn: "2026-08-31",
+    sendOn: "2026-08-30",
     days: [
       "Måndag: Lätt gym",
       "Tisdag: 6 km lugn distans",
@@ -83,7 +83,7 @@ const hannaPlan: HannaWeek[] = [
   },
   {
     title: "Tävlingsvecka (8–13 september)",
-    sendOn: "2026-09-07",
+    sendOn: "2026-09-06",
     days: [
       "Måndag: Vila eller promenad",
       "Tisdag: 5 km lugnt + 4 strides",
@@ -140,7 +140,7 @@ export function shouldSendHannaWeeklyEmail(now = new Date()) {
   const today = getTodayInTimezone(TIMEZONE, now);
   const localHour = getHourInTimezone(TIMEZONE, now);
 
-  return today.weekdayKey === "monday" && localHour === 16 && Boolean(getHannaWeekForSendDate(now));
+  return today.weekdayKey === "sunday" && localHour === 16 && Boolean(getHannaWeekForSendDate(now));
 }
 
 function getHannaWeekForSendDate(now: Date) {
