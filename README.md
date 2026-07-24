@@ -21,6 +21,7 @@ This version is designed to run on free-tier services:
 - Send a Sunday evening Bryan Johnson weekly digest from open public sources
 - Send Hanna one upcoming marathon-plan week every Sunday at 16:00
 - Include Vercel Hobby-compatible cron jobs for the daily training email and weekly emails
+- Add a confidence-boosting pep note at the bottom of every email
 - Add a colored hip/knee safety note at the bottom of every email
 - Use `Europe/Stockholm` as the training timezone
 

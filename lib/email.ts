@@ -1,6 +1,11 @@
 import { Resend } from "resend";
 import { getTodayInTimezone } from "./dates";
-import { buildSafetyHtmlFooter, buildSafetyTextFooter } from "./email-footer";
+import {
+  buildConfidenceHtmlFooter,
+  buildConfidenceTextFooter,
+  buildSafetyHtmlFooter,
+  buildSafetyTextFooter
+} from "./email-footer";
 import { DayPlan, WeekdayKey, WeeklyPlan, weekdayLabels } from "./types";
 
 type EmailPayload = {
@@ -86,6 +91,8 @@ function buildText({
     ...warnings,
     "🌙 Undvik sen hård benträning - det kan försämra sömn och återhämtning.",
     "",
+    buildConfidenceTextFooter(),
+    "",
     buildSafetyTextFooter()
   ]
     .filter(Boolean)
@@ -145,6 +152,7 @@ function buildHtml({
             : ""
         }
         <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;">🌙 Undvik sen hård benträning - det kan försämra sömn och återhämtning.</p>
+        ${buildConfidenceHtmlFooter()}
         ${buildSafetyHtmlFooter()}
       </section>
     </main>

@@ -1,6 +1,20 @@
 export const injurySafetyText =
   "Om höft eller knä börjar göra ont mer än 3/10 under ett pass eller känns sämre dagen efter, kortas nästa löppass med 30–50 % eller ersätts med cykel/gång. Målet är att komma frisk till start, inte att samla flest möjliga kilometer.";
 
+export const confidenceBoostText =
+  "Du bygger formen med varje smart beslut. Ett bra pass är inte alltid det hårdaste passet – det är passet som gör dig starkare, tryggare och redo för nästa steg.";
+
+export function buildConfidenceTextFooter() {
+  return `✨ Pepp: ${confidenceBoostText}`;
+}
+
+export function buildConfidenceHtmlFooter() {
+  return `<div style="margin-top:18px;padding:14px 16px;border-radius:8px;background:#fff1e8;border:1px solid #f0b58d;color:#533325;">
+    <p style="margin:0 0 6px;font-weight:bold;">✨ Pepp</p>
+    <p style="margin:0;line-height:1.55;">${escapeHtml(confidenceBoostText)}</p>
+  </div>`;
+}
+
 export function buildSafetyTextFooter() {
   return `🩵 Kroppskoll: ${injurySafetyText}`;
 }
