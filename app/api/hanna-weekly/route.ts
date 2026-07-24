@@ -38,7 +38,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json().catch(() => ({}))) as { dryRun?: boolean };
+    const body = (await request.json().catch(() => ({}))) as { dryRun?: boolean; previewTo?: string };
 
     if (body.dryRun) {
       const email = buildHannaWeeklyEmail();
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const email = await sendHannaWeeklyEmail();
+    const email = await sendHannaWeeklyEmail({ previewTo: body.previewTo });
     return NextResponse.json({ ok: true, dryRun: false, subject: email.subject, to: email.to, cc: email.cc });
   } catch (error) {
     return NextResponse.json(

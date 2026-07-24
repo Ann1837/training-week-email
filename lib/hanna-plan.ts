@@ -13,6 +13,7 @@ const HANNA_EMAIL_CC = "ann@pjano.se";
 
 type HannaPayload = {
   now?: Date;
+  previewTo?: string;
 };
 
 type HannaWeek = {
@@ -116,8 +117,8 @@ export function buildHannaWeeklyEmail({ now = new Date() }: HannaPayload = {}) {
 
 export async function sendHannaWeeklyEmail(payload: HannaPayload = {}) {
   const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.HANNA_EMAIL_TO ?? HANNA_EMAIL_TO;
-  const cc = process.env.HANNA_EMAIL_CC ?? HANNA_EMAIL_CC;
+  const to = payload.previewTo ?? process.env.HANNA_EMAIL_TO ?? HANNA_EMAIL_TO;
+  const cc = payload.previewTo ? undefined : process.env.HANNA_EMAIL_CC ?? HANNA_EMAIL_CC;
   const from = process.env.TRAINING_EMAIL_FROM ?? "Training Briefing <onboarding@resend.dev>";
 
   if (!apiKey) {
@@ -129,7 +130,7 @@ export async function sendHannaWeeklyEmail(payload: HannaPayload = {}) {
   const result = await resend.emails.send({
     from,
     to,
-    cc,
+    ...(cc ? { cc } : {}),
     subject: email.subject,
     html: email.html,
     text: email.text
