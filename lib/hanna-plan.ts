@@ -201,24 +201,24 @@ function buildText(dateLabel: string, week?: HannaWeek) {
 function buildHtml(dateLabel: string, week?: HannaWeek) {
   return `<!doctype html>
 <html lang="sv">
-  <body style="margin:0;background:#f5f2ed;color:#1e2422;font-family:Arial,Helvetica,sans-serif;">
+  <body style="margin:0;background:#070b0a;color:#f4fff8;font-family:Arial,Helvetica,sans-serif;">
     <main style="max-width:640px;margin:0 auto;padding:28px 18px;">
-      <section style="background:#ffffff;border:1px solid #ddd6cb;border-radius:8px;padding:24px;">
-        <p style="margin:0 0 12px;font-size:16px;">Hej Hanna!</p>
-        <p style="margin:0;color:#66706b;font-size:14px;">📅 ${escapeHtml(dateLabel)}</p>
-        <h1 style="margin:8px 0 10px;font-size:24px;line-height:1.25;">🏃 ${escapeHtml(week?.title ?? "Marathonplan")}</h1>
+      <section style="background:#0f1513;border:1px solid #22312c;border-radius:8px;padding:24px;border-top:4px solid #38ff7a;">
+        <p style="margin:0 0 12px;font-size:16px;color:#f4fff8;">Hej Hanna!</p>
+        <p style="margin:0;color:#8fa39b;font-size:14px;">📅 ${escapeHtml(dateLabel)}</p>
+        <h1 style="margin:8px 0 10px;font-size:24px;line-height:1.25;color:#38ff7a;">🏃 ${escapeHtml(week?.title ?? "Marathonplan")}</h1>
         ${
           week
-            ? `<p style="margin:0 0 16px;color:#38423e;">Här kommer kommande veckas plan.</p>
-              <article style="padding:14px 0;border-top:1px solid #eee5dc;">
-                <ul style="margin:0;padding-left:20px;color:#38423e;">
+            ? `<p style="margin:0 0 16px;color:#c9d8d1;">Här kommer kommande veckas plan.</p>
+              <article style="padding:14px 0;border-top:1px solid #22312c;">
+                <ul style="margin:0;padding-left:20px;color:#c9d8d1;">
                   ${week.days.map((day) => `<li style="margin:5px 0;">${formatDayHtml(day)}</li>`).join("")}
                 </ul>
               </article>
-              <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;">Lycka till med passen!</p>
+              <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #22312c;color:#f4fff8;">Lycka till med passen!</p>
               ${buildConfidenceHtmlFooter()}
               ${buildSafetyHtmlFooter()}`
-            : `<p style="margin:0;color:#38423e;">Det finns ingen plan schemalagd för kommande vecka.</p>`
+            : `<p style="margin:0;color:#c9d8d1;">Det finns ingen plan schemalagd för kommande vecka.</p>`
         }
       </section>
     </main>
@@ -244,5 +244,5 @@ function formatDayHtml(value: string) {
   const label = value.slice(0, colonIndex + 1);
   const rest = value.slice(colonIndex + 1);
 
-  return `<strong>${escapeHtml(label)}</strong>${escapeHtml(rest)}`;
+  return `<strong style="color:#f4fff8;">${escapeHtml(label)}</strong>${escapeHtml(rest)}`;
 }

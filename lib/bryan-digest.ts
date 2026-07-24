@@ -205,28 +205,28 @@ function buildText(posts: BryanPost[], dateLabel: string) {
 function buildHtml(posts: BryanPost[], dateLabel: string) {
   return `<!doctype html>
 <html lang="sv">
-  <body style="margin:0;background:#f5f2ed;color:#1e2422;font-family:Arial,Helvetica,sans-serif;">
+  <body style="margin:0;background:#070b0a;color:#f4fff8;font-family:Arial,Helvetica,sans-serif;">
     <main style="max-width:640px;margin:0 auto;padding:28px 18px;">
-      <section style="background:#ffffff;border:1px solid #ddd6cb;border-radius:8px;padding:24px;">
-        <p style="margin:0 0 12px;font-size:16px;">Hej Ann!</p>
-        <p style="margin:0;color:#66706b;font-size:14px;">📅 ${escapeHtml(dateLabel)}</p>
-        <h1 style="margin:8px 0 10px;font-size:24px;line-height:1.25;">🧬 Bryan Johnson veckosvep</h1>
-        <p style="margin:0 0 16px;color:#38423e;">${
+      <section style="background:#0f1513;border:1px solid #22312c;border-radius:8px;padding:24px;border-top:4px solid #38ff7a;">
+        <p style="margin:0 0 12px;font-size:16px;color:#f4fff8;">Hej Ann!</p>
+        <p style="margin:0;color:#8fa39b;font-size:14px;">📅 ${escapeHtml(dateLabel)}</p>
+        <h1 style="margin:8px 0 10px;font-size:24px;line-height:1.25;color:#38ff7a;">🧬 Bryan Johnson veckosvep</h1>
+        <p style="margin:0 0 16px;color:#c9d8d1;">${
           posts.length
             ? `Jag hittade ${posts.length} nya/lämpligt aktuella poster från öppna källor.`
             : "Jag hittade inga nya poster från de öppna källorna den här veckan."
         }</p>
         ${posts
           .map(
-            (post) => `<article style="padding:12px 0;border-top:1px solid #eee5dc;">
-              <p style="margin:0 0 4px;color:#66706b;font-size:13px;">${escapeHtml(formatDate(post.published))} · ${escapeHtml(post.source)}</p>
-              <h2 style="margin:0 0 6px;font-size:17px;line-height:1.35;">${escapeHtml(post.title)}</h2>
-              ${post.summary ? `<p style="margin:0 0 8px;color:#38423e;">${escapeHtml(post.summary)}</p>` : ""}
-              <a href="${escapeHtml(post.url)}" style="color:#315f52;">Öppna inlägg</a>
+            (post) => `<article style="padding:12px 0;border-top:1px solid #22312c;">
+              <p style="margin:0 0 4px;color:#8fa39b;font-size:13px;">${escapeHtml(formatDate(post.published))} · ${escapeHtml(post.source)}</p>
+              <h2 style="margin:0 0 6px;font-size:17px;line-height:1.35;color:#f4fff8;">${escapeHtml(post.title)}</h2>
+              ${post.summary ? `<p style="margin:0 0 8px;color:#c9d8d1;">${escapeHtml(post.summary)}</p>` : ""}
+              <a href="${escapeHtml(post.url)}" style="color:#38ff7a;">Öppna inlägg</a>
             </article>`
           )
           .join("")}
-        <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;color:#66706b;font-size:13px;">Automatisk sammanställning från öppna källor, inte medicinska råd.</p>
+        <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #22312c;color:#8fa39b;font-size:13px;">Automatisk sammanställning från öppna källor, inte medicinska råd.</p>
         ${buildConfidenceHtmlFooter()}
         ${buildSafetyHtmlFooter()}
       </section>

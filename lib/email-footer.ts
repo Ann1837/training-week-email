@@ -19,9 +19,9 @@ export function buildConfidenceTextFooter(now = new Date()) {
 export function buildConfidenceHtmlFooter(now = new Date()) {
   const confidenceBoostText = getWeeklyConfidenceBoost(now);
 
-  return `<div style="margin-top:18px;padding:14px 16px;border-radius:8px;background:#fff1e8;border:1px solid #f0b58d;color:#533325;">
-    <p style="margin:0 0 6px;font-weight:bold;">✨ Pepp</p>
-    <p style="margin:0;line-height:1.55;">${escapeHtml(confidenceBoostText)}</p>
+  return `<div style="margin-top:18px;padding:14px 16px;border-radius:8px;background:#17231e;border:1px solid #38ff7a;color:#f2fff7;">
+    <p style="margin:0 0 6px;font-weight:bold;color:#38ff7a;">✨ Pepp</p>
+    <p style="margin:0;line-height:1.55;color:#f2fff7;">${escapeHtml(confidenceBoostText)}</p>
   </div>`;
 }
 
@@ -38,9 +38,9 @@ export function buildSafetyTextFooter() {
 }
 
 export function buildSafetyHtmlFooter() {
-  return `<div style="margin-top:18px;padding:14px 16px;border-radius:8px;background:#eaf7f4;border:1px solid #8fcfc1;color:#24433d;">
-    <p style="margin:0 0 6px;font-weight:bold;">🩵 Kroppskoll</p>
-    <p style="margin:0;line-height:1.55;">${escapeHtml(injurySafetyText)}</p>
+  return `<div style="margin-top:14px;padding:14px 16px;border-radius:8px;background:#101918;border:1px solid #2f6f62;color:#d9f7ee;">
+    <p style="margin:0 0 6px;font-weight:bold;color:#8ef5cf;">🩵 Kroppskoll</p>
+    <p style="margin:0;line-height:1.55;color:#d9f7ee;">${escapeHtml(injurySafetyText)}</p>
   </div>`;
 }
 

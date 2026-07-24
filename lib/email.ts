@@ -125,20 +125,20 @@ function buildHtml({
 
   return `<!doctype html>
 <html lang="sv">
-  <body style="margin:0;background:#f5f2ed;color:#1e2422;font-family:Arial,Helvetica,sans-serif;">
+  <body style="margin:0;background:#070b0a;color:#f4fff8;font-family:Arial,Helvetica,sans-serif;">
     <main style="max-width:640px;margin:0 auto;padding:28px 18px;">
-      <section style="background:#ffffff;border:1px solid #ddd6cb;border-radius:8px;padding:24px;">
-        <p style="margin:0 0 12px;font-size:16px;">Hej ${escapeHtml(owner)}!</p>
-        <p style="margin:0;color:#66706b;font-size:14px;">📅 ${escapeHtml(dateLabel)}</p>
-        <h1 style="margin:8px 0 18px;font-size:24px;line-height:1.25;">🎯 ${escapeHtml(weekday)}: ${escapeHtml(day.headline)}</h1>
+      <section style="background:#0f1513;border:1px solid #22312c;border-radius:8px;padding:24px;border-top:4px solid #38ff7a;">
+        <p style="margin:0 0 12px;font-size:16px;color:#f4fff8;">Hej ${escapeHtml(owner)}!</p>
+        <p style="margin:0;color:#8fa39b;font-size:14px;">📅 ${escapeHtml(dateLabel)}</p>
+        <h1 style="margin:8px 0 18px;font-size:24px;line-height:1.25;color:#38ff7a;">🎯 ${escapeHtml(weekday)}: ${escapeHtml(day.headline)}</h1>
         <table style="width:100%;border-collapse:collapse;">
           ${rows
             .map(
               ([icon, label, value]) => `<tr>
-                <td style="width:34px;padding:10px 0;border-top:1px solid #eee5dc;vertical-align:top;font-size:20px;">${icon}</td>
-                <td style="padding:10px 0;border-top:1px solid #eee5dc;vertical-align:top;">
-                  <strong>${escapeHtml(label)}</strong><br />
-                  <span style="color:#38423e;">${escapeHtml(value)}</span>
+                <td style="width:34px;padding:10px 0;border-top:1px solid #22312c;vertical-align:top;font-size:20px;">${icon}</td>
+                <td style="padding:10px 0;border-top:1px solid #22312c;vertical-align:top;">
+                  <strong style="color:#f4fff8;">${escapeHtml(label)}</strong><br />
+                  <span style="color:#c9d8d1;">${escapeHtml(value)}</span>
                 </td>
               </tr>`
             )
@@ -146,12 +146,12 @@ function buildHtml({
         </table>
         ${
           warnings.length
-            ? `<div style="margin-top:16px;padding:12px;border-radius:8px;background:#fff2d9;border:1px solid #f2c46d;">
-                ${warnings.map((warning) => `<p style="margin:4px 0;">${escapeHtml(warning)}</p>`).join("")}
+            ? `<div style="margin-top:16px;padding:12px;border-radius:8px;background:#261b10;border:1px solid #ffb84d;color:#ffe2b8;">
+                ${warnings.map((warning) => `<p style="margin:4px 0;color:#ffe2b8;">${escapeHtml(warning)}</p>`).join("")}
               </div>`
             : ""
         }
-        <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;">🌙 Undvik sen hård benträning - det kan försämra sömn och återhämtning.</p>
+        <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #22312c;color:#dce9e4;">🌙 Undvik sen hård benträning - det kan försämra sömn och återhämtning.</p>
         ${buildConfidenceHtmlFooter()}
         ${buildSafetyHtmlFooter()}
       </section>
