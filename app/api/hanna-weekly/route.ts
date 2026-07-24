@@ -27,7 +27,7 @@ export async function GET(request: Request) {
     }
 
     const email = await sendHannaWeeklyEmail();
-    return NextResponse.json({ ok: true, subject: email.subject, to: email.to });
+    return NextResponse.json({ ok: true, subject: email.subject, to: email.to, cc: email.cc });
   } catch (error) {
     return NextResponse.json(
       { ok: false, error: error instanceof Error ? error.message : "Kunde inte skicka Hanna-mail." },
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     }
 
     const email = await sendHannaWeeklyEmail();
-    return NextResponse.json({ ok: true, dryRun: false, subject: email.subject, to: email.to });
+    return NextResponse.json({ ok: true, dryRun: false, subject: email.subject, to: email.to, cc: email.cc });
   } catch (error) {
     return NextResponse.json(
       { ok: false, error: error instanceof Error ? error.message : "Kunde inte skicka Hanna-mail." },

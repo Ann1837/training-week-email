@@ -3,6 +3,7 @@ import { getHourInTimezone, getTodayInTimezone } from "./dates";
 
 const TIMEZONE = "Europe/Stockholm";
 const HANNA_EMAIL_TO = "hannapellk@gmail.com";
+const HANNA_EMAIL_CC = "ann@pjano.se";
 
 type HannaPayload = {
   now?: Date;
@@ -110,6 +111,7 @@ export function buildHannaWeeklyEmail({ now = new Date() }: HannaPayload = {}) {
 export async function sendHannaWeeklyEmail(payload: HannaPayload = {}) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.HANNA_EMAIL_TO ?? HANNA_EMAIL_TO;
+  const cc = process.env.HANNA_EMAIL_CC ?? HANNA_EMAIL_CC;
   const from = process.env.TRAINING_EMAIL_FROM ?? "Training Briefing <onboarding@resend.dev>";
 
   if (!apiKey) {
@@ -121,6 +123,7 @@ export async function sendHannaWeeklyEmail(payload: HannaPayload = {}) {
   const result = await resend.emails.send({
     from,
     to,
+    cc,
     subject: email.subject,
     html: email.html,
     text: email.text
@@ -130,7 +133,7 @@ export async function sendHannaWeeklyEmail(payload: HannaPayload = {}) {
     throw new Error(`Resend: ${result.error.message}`);
   }
 
-  return { ...email, to, result };
+  return { ...email, to, cc, result };
 }
 
 export function shouldSendHannaWeeklyEmail(now = new Date()) {

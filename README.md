@@ -54,7 +54,7 @@ The Hanna email lives in:
 app/api/hanna-weekly/route.ts
 ```
 
-It sends one upcoming marathon-plan week to `hannapellk@gmail.com` every Monday at 16:00 Europe/Stockholm. It uses the same Resend account and sender as the other emails. No extra service, paid API, database, or OpenAI usage is required.
+It sends one upcoming marathon-plan week to `hannapellk@gmail.com` every Monday at 16:00 Europe/Stockholm, with `ann@pjano.se` on CC. It uses the same Resend account and sender as the other emails. No extra service, paid API, database, or OpenAI usage is required.
 
 The first automatic email is scheduled for August 3, 2026 and contains Vecka 1 (4–10 augusti). The route only sends automatically on the Mondays that have a scheduled week in `lib/hanna-plan.ts`. A manual dry-run previews the next upcoming week.
 
@@ -62,6 +62,7 @@ If you want to change the recipient later, set this optional Vercel environment 
 
 ```bash
 HANNA_EMAIL_TO=new-address@example.com
+HANNA_EMAIL_CC=ann@pjano.se
 ```
 
 ## Setup
@@ -82,6 +83,7 @@ RESEND_API_KEY=your_resend_api_key
 TRAINING_EMAIL_TO=ann@pjano.se
 TRAINING_EMAIL_FROM=Training Briefing <training@yourdomain.com>
 HANNA_EMAIL_TO=hannapellk@gmail.com
+HANNA_EMAIL_CC=ann@pjano.se
 CRON_SECRET=change-me
 ADMIN_SECRET=change-me-too
 ```
@@ -146,6 +148,7 @@ RESEND_API_KEY=re_xxxxxxxxx
 TRAINING_EMAIL_TO=ann@pjano.se
 TRAINING_EMAIL_FROM=Training Briefing <training@yourdomain.com>
 HANNA_EMAIL_TO=hannapellk@gmail.com
+HANNA_EMAIL_CC=ann@pjano.se
 CRON_SECRET=a-long-random-secret
 ADMIN_SECRET=another-long-random-secret
 ```
@@ -313,7 +316,7 @@ Services used:
 
 - Vercel: hosts the Next.js app and runs the daily training cron plus two weekly cron jobs.
 - Resend: sends the daily training email.
-- Static Hanna marathon plan: one upcoming week is sent once per week to `hannapellk@gmail.com`.
+- Static Hanna marathon plan: one upcoming week is sent once per week to `hannapellk@gmail.com`, with `ann@pjano.se` on CC.
 - Public Bryan Johnson/YouTube pages: read once per weekly digest.
 - GitHub, optional but recommended: stores the repo so Vercel can deploy it.
 
