@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { getHourInTimezone, getTodayInTimezone } from "./dates";
+import { buildSafetyHtmlFooter, buildSafetyTextFooter } from "./email-footer";
 
 const TIMEZONE = "Europe/Stockholm";
 const YOUTUBE_FEED_URL = "https://www.youtube.com/feeds/videos.xml?channel_id=UCnRVL1-HJnXWB_Xi2dAoTcg";
@@ -186,7 +187,9 @@ function buildText(posts: BryanPost[], dateLabel: string) {
         .join("\n")
     ),
     "",
-    "Kort notis: det här är en automatisk sammanställning från öppna källor, inte medicinska råd."
+    "Kort notis: det här är en automatisk sammanställning från öppna källor, inte medicinska råd.",
+    "",
+    buildSafetyTextFooter()
   ]
     .filter(Boolean)
     .join("\n");
@@ -217,6 +220,7 @@ function buildHtml(posts: BryanPost[], dateLabel: string) {
           )
           .join("")}
         <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;color:#66706b;font-size:13px;">Automatisk sammanställning från öppna källor, inte medicinska råd.</p>
+        ${buildSafetyHtmlFooter()}
       </section>
     </main>
   </body>

@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { getHourInTimezone, getTodayInTimezone } from "./dates";
+import { buildSafetyHtmlFooter, buildSafetyTextFooter } from "./email-footer";
 
 const TIMEZONE = "Europe/Stockholm";
 const HANNA_EMAIL_TO = "hannapellk@gmail.com";
@@ -183,7 +184,9 @@ function buildText(dateLabel: string, week?: HannaWeek) {
     "",
     ...week.days.map((day) => `• ${day}`),
     "",
-    "Lycka till med passen!"
+    "Lycka till med passen!",
+    "",
+    buildSafetyTextFooter()
   ].join("\n");
 }
 
@@ -204,7 +207,8 @@ function buildHtml(dateLabel: string, week?: HannaWeek) {
                   ${week.days.map((day) => `<li style="margin:5px 0;">${formatDayHtml(day)}</li>`).join("")}
                 </ul>
               </article>
-              <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;">Lycka till med passen!</p>`
+              <p style="margin:16px 0 0;padding-top:14px;border-top:1px solid #eee5dc;">Lycka till med passen!</p>
+              ${buildSafetyHtmlFooter()}`
             : `<p style="margin:0;color:#38423e;">Det finns ingen plan schemalagd för kommande vecka.</p>`
         }
       </section>
