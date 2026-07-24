@@ -319,6 +319,13 @@ curl -fsS -X POST "https://your-domain.com/api/hanna-weekly" \
   -d '{"previewTo":"ann@pjano.se"}'
 ```
 
+Sending Hanna's marathon email preview to Ann only:
+
+```bash
+curl -fsS -X POST "https://your-domain.com/api/hanna-preview" \
+  -H "X-Admin-Secret: your-admin-secret"
+```
+
 ## COST SAFETY
 
 This project is intended to stay on free-tier services only.
