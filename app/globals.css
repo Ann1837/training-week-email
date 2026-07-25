@@ -31,6 +31,10 @@ body {
   letter-spacing: 0;
 }
 
+a {
+  color: inherit;
+}
+
 button,
 input,
 textarea {
@@ -39,6 +43,60 @@ textarea {
 
 button {
   cursor: pointer;
+}
+
+.privacy-page {
+  min-height: 100vh;
+  background: #070b0a;
+  color: #f4fff8;
+  padding: 28px 18px;
+  display: grid;
+  place-items: start center;
+}
+
+.privacy-card {
+  width: min(720px, 100%);
+  background: #0f1513;
+  border: 1px solid #22312c;
+  border-top: 4px solid #38ff7a;
+  border-radius: 8px;
+  padding: 28px;
+  line-height: 1.6;
+}
+
+.privacy-card h1 {
+  margin: 6px 0 4px;
+  color: #38ff7a;
+  font-size: 32px;
+  line-height: 1.15;
+}
+
+.privacy-card h2 {
+  margin: 24px 0 6px;
+  color: #f4fff8;
+  font-size: 18px;
+}
+
+.privacy-card p {
+  margin: 0 0 12px;
+  color: #c9d8d1;
+}
+
+.privacy-card a {
+  color: #38ff7a;
+  font-weight: 700;
+}
+
+.privacy-kicker {
+  color: #8fa39b;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.privacy-card .privacy-updated {
+  color: #8fa39b;
+  margin-bottom: 22px;
 }
 
 .shell {
