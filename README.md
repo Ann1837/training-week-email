@@ -93,7 +93,7 @@ ADMIN_SECRET=change-me-too
 WHOOP_CLIENT_ID=your-whoop-client-id
 WHOOP_CLIENT_SECRET=your-whoop-client-secret
 WHOOP_REDIRECT_URI=https://training-week-email.vercel.app/api/whoop/callback
-WHOOP_SCOPES=offline read:profile read:recovery read:sleep read:cycles read:workout
+WHOOP_SCOPES=offline read:recovery read:sleep read:cycles read:workout
 WHOOP_REFRESH_TOKEN=add-this-after-whoop-login
 ```
 
@@ -124,7 +124,7 @@ In Vercel, add these Production environment variables:
 WHOOP_CLIENT_ID=your-whoop-client-id
 WHOOP_CLIENT_SECRET=your-whoop-client-secret
 WHOOP_REDIRECT_URI=https://training-week-email.vercel.app/api/whoop/callback
-WHOOP_SCOPES=offline read:profile read:recovery read:sleep read:cycles read:workout
+WHOOP_SCOPES=offline read:recovery read:sleep read:cycles read:workout
 ```
 
 After adding or changing these variables, redeploy the project.

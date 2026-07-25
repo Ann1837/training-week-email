@@ -20,7 +20,7 @@ export function getWhoopConfig(requestUrl: string) {
     redirectUri: process.env.WHOOP_REDIRECT_URI ?? `${origin}/api/whoop/callback`,
     scopes:
       process.env.WHOOP_SCOPES ??
-      "offline read:profile read:recovery read:sleep read:cycles read:workout"
+      "offline read:recovery read:sleep read:cycles read:workout"
   };
 }
 
