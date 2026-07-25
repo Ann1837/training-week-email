@@ -99,6 +99,37 @@ button {
   margin-bottom: 22px;
 }
 
+.whoop-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.whoop-secret {
+  margin: 18px 0 12px;
+  max-width: 420px;
+}
+
+.whoop-secret input {
+  background: #070b0a;
+  border-color: #2f6f62;
+  color: #f4fff8;
+}
+
+.whoop-button {
+  margin: 4px 0 18px;
+}
+
+.whoop-note {
+  padding-top: 14px;
+  border-top: 1px solid #22312c;
+}
+
+.whoop-note code {
+  color: #38ff7a;
+  overflow-wrap: anywhere;
+}
+
 .shell {
   min-height: 100vh;
   display: grid;

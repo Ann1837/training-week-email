@@ -22,6 +22,7 @@ This version is designed to run on free-tier services:
 - Send Hanna one upcoming marathon-plan week every Sunday at 16:00
 - Include Vercel Hobby-compatible cron jobs for the daily training email and weekly emails
 - Use a WHOOP-inspired dark email style with lime-green accents
+- Include a WHOOP OAuth start/callback flow for connecting Ann's WHOOP account
 - Add a weekly rotating confidence-boosting pep note at the bottom of every email
 - Add a colored hip/knee safety note at the bottom of every email
 - Use `Europe/Stockholm` as the training timezone
@@ -89,9 +90,56 @@ HANNA_EMAIL_TO=hannapellk@gmail.com
 HANNA_EMAIL_CC=ann@pjano.se
 CRON_SECRET=change-me
 ADMIN_SECRET=change-me-too
+WHOOP_CLIENT_ID=your-whoop-client-id
+WHOOP_CLIENT_SECRET=your-whoop-client-secret
+WHOOP_REDIRECT_URI=https://training-week-email.vercel.app/api/whoop/callback
+WHOOP_SCOPES=offline read:profile read:recovery read:sleep read:cycles read:workout
+WHOOP_REFRESH_TOKEN=add-this-after-whoop-login
 ```
 
 `TRAINING_EMAIL_FROM` must be a sender/domain verified in Resend. `ADMIN_SECRET` protects save and manual test-email actions so strangers cannot create email usage.
+
+## WHOOP OAuth Setup
+
+WHOOP login uses OAuth 2.0. WHOOP's developer docs list:
+
+- Authorization URL: `https://api.prod.whoop.com/oauth/oauth2/auth`
+- Token URL: `https://api.prod.whoop.com/oauth/oauth2/token`
+- Redirect URL must exactly match a URL registered in the WHOOP Developer Dashboard
+- The `offline` scope is needed to receive a refresh token
+
+In the WHOOP Developer Dashboard, use:
+
+```text
+Privacy policy:
+https://training-week-email.vercel.app/privacy
+
+Redirect URL:
+https://training-week-email.vercel.app/api/whoop/callback
+```
+
+In Vercel, add these Production environment variables:
+
+```bash
+WHOOP_CLIENT_ID=your-whoop-client-id
+WHOOP_CLIENT_SECRET=your-whoop-client-secret
+WHOOP_REDIRECT_URI=https://training-week-email.vercel.app/api/whoop/callback
+WHOOP_SCOPES=offline read:profile read:recovery read:sleep read:cycles read:workout
+```
+
+After adding or changing these variables, redeploy the project.
+
+To connect WHOOP:
+
+1. Open `https://training-week-email.vercel.app/whoop`.
+2. Enter `ADMIN_SECRET`.
+3. Click `Starta WHOOP-login`.
+4. Log in at WHOOP and approve the scopes.
+5. Copy the shown `WHOOP_REFRESH_TOKEN`.
+6. Add it in Vercel as a Production environment variable named `WHOOP_REFRESH_TOKEN`.
+7. Redeploy the project.
+
+The callback does not save tokens to a paid database. It shows the refresh token once so you can store it in Vercel environment variables for this private $0 setup.
 
 ## Actual Scheduled Email Function
 
@@ -337,6 +385,7 @@ Services used:
 - Resend: sends the daily training email.
 - Static Hanna marathon plan: one upcoming week is sent once per week to `hannapellk@gmail.com`, with `ann@pjano.se` on CC.
 - Public Bryan Johnson/YouTube pages: read once per weekly digest.
+- WHOOP API, optional: used only if you connect a WHOOP app with OAuth. It does not add paid services or extra cron jobs by itself.
 - GitHub, optional but recommended: stores the repo so Vercel can deploy it.
 
 Free plans required:
@@ -361,6 +410,7 @@ How to avoid charges:
 - Do not enable Vercel Pro, paid analytics, paid observability, paid storage, paid deployment protection, paid databases, Vercel AI, Vercel Workflows, Vercel Queues, or any paid add-on.
 - Do not add an OpenAI API key. This app does not need one.
 - Do not add GLM, DuckDuckGo, or other AI/search API keys unless you deliberately change the app later. Surprise exercises are stored in the weekly JSON plan for $0 operation.
+- Do not add polling or frequent WHOOP cron jobs. Keep WHOOP requests manual or attach them only to existing low-frequency emails if you extend the app later.
 - Do not add paid search/scraping APIs for the Bryan Johnson digest. It uses free public feeds/pages only.
 - Keep manual test sends low. Every click on `Testmail` sends a real email.
 - Watch Resend usage after deployment and stay under the free daily email limit. This project normally sends one email per day, plus Hanna's weekly Sunday email and Bryan's weekly Sunday email.
@@ -407,6 +457,9 @@ If Resend rejects the sender, verify the domain used by `TRAINING_EMAIL_FROM`.
 - `GET /api/bryan-weekly` sends the scheduled Sunday Bryan Johnson digest when the Stockholm local hour is 19
 - `POST /api/bryan-weekly` sends a manual Bryan Johnson digest and requires `ADMIN_SECRET`
 - `POST /api/bryan-weekly` with `{ "dryRun": true }` previews the digest without sending
+- `GET /whoop` shows a small admin page to start WHOOP OAuth login
+- `GET /api/whoop/start` starts WHOOP OAuth login and requires `ADMIN_SECRET`
+- `GET /api/whoop/callback` receives WHOOP's OAuth callback and shows the refresh token setup instructions
 
 ## Editing The Plan Manually
 
