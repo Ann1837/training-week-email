@@ -124,13 +124,32 @@ export async function getLatestWhoopData(requestUrl: string) {
   const [recoveries, sleeps, workouts] = await Promise.all([
     getCollection<WhoopRecovery>(requestUrl, accessToken, "/developer/v2/recovery", 1),
     getCollection<WhoopSleep>(requestUrl, accessToken, "/developer/v2/activity/sleep", 10),
-    getCollection<WhoopWorkout>(requestUrl, accessToken, "/developer/v2/activity/workout", 1)
+    getCollection<WhoopWorkout>(requestUrl, accessToken, "/developer/v2/activity/workout", 25)
   ]);
+
+  const yesterdayWorkouts = workouts.filter((workout) =>
+    isOnRelativeLocalDay(workout.start, "Europe/Stockholm", -1)
+  );
 
   return {
     recovery: recoveries[0] ?? null,
     sleep: sleeps.find((sleep) => !sleep.nap) ?? sleeps[0] ?? null,
     workout: workouts[0] ?? null,
+    yesterdayWorkouts,
     fetchedAt: new Date().toISOString()
   };
 }
+
+function isOnRelativeLocalDay(isoDate: string, timezone: string, dayOffset: number) {
+  const target = new Date();
+  target.setUTCDate(target.getUTCDate() + dayOffset);
+  const formatter = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+
+  return formatter.format(new Date(isoDate)) === formatter.format(target);
+}
+  
