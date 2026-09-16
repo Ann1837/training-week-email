@@ -157,6 +157,31 @@ button {
   margin: 0;
 }
 
+.whoop-results article p + p {
+  margin-top: 8px;
+}
+
+.whoop-results .whoop-recommendation {
+  border-left: 4px solid #8fa39b;
+}
+
+.whoop-results .whoop-recommendation.green {
+  border-left-color: #38ff7a;
+}
+
+.whoop-results .whoop-recommendation.yellow {
+  border-left-color: #f0b84d;
+}
+
+.whoop-results .whoop-recommendation.red {
+  border-left-color: #ff6b5f;
+}
+
+.whoop-results .whoop-detail {
+  color: #8fa39b;
+  font-size: 14px;
+}
+
 .shell {
   min-height: 100vh;
   display: grid;
@@ -452,3 +477,4 @@ button {
     flex: 1 1 150px;
   }
 }
+  
