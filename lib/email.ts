@@ -7,14 +7,17 @@ import {
   buildSafetyTextFooter
 } from "./email-footer";
 import { DayPlan, WeekdayKey, WeeklyPlan, weekdayLabels } from "./types";
+import type { DailyRecommendation } from "./training-coach";
 
 type EmailPayload = {
   plan: WeeklyPlan;
   dayKey?: WeekdayKey;
   now?: Date;
+  recommendation?: DailyRecommendation;
+  weeklyOverview?: string[];
 };
 
-export function buildTodayEmail({ plan, dayKey, now = new Date() }: EmailPayload) {
+export function buildTodayEmail({ plan, dayKey, now = new Date(), recommendation, weeklyOverview }: EmailPayload) {
   const today = getTodayInTimezone(plan.timezone, now);
   const selectedDayKey = dayKey ?? today.weekdayKey;
   const day = plan.days[selectedDayKey];
@@ -26,8 +29,8 @@ export function buildTodayEmail({ plan, dayKey, now = new Date() }: EmailPayload
   ].filter(Boolean);
 
   const subject = `🟢 Dagens träning: ${weekday} - ${day.headline}`;
-  const text = buildText({ owner: plan.owner, day, weekday, dateLabel, warnings });
-  const html = buildHtml({ owner: plan.owner, day, weekday, dateLabel, warnings });
+  const text = buildText({ owner: plan.owner, day, weekday, dateLabel, warnings, recommendation, weeklyOverview });
+  const html = buildHtml({ owner: plan.owner, day, weekday, dateLabel, warnings, recommendation, weeklyOverview });
 
   return { subject, text, html, dayKey: selectedDayKey };
 }
@@ -67,12 +70,16 @@ function buildText({
   weekday,
   dateLabel,
   warnings
+  ,recommendation
+  ,weeklyOverview
 }: {
   owner: string;
   day: DayPlan;
   weekday: string;
   dateLabel: string;
   warnings: string[];
+  recommendation?: DailyRecommendation;
+  weeklyOverview?: string[];
 }) {
   return [
     `Hej ${owner}!`,
@@ -80,6 +87,11 @@ function buildText({
     `📅 ${dateLabel}`,
     `🎯 ${weekday}: ${day.headline}`,
     "",
+    recommendation ? `🟢 WHOOP-justering: ${recommendation.title}` : "",
+    recommendation ? `Dagens beslut: ${recommendation.training}` : "",
+    recommendation ? `Varför: ${recommendation.reason}` : "",
+    recommendation ? `Igår: ${recommendation.yesterdaySummary}` : "",
+    recommendation ? "" : "",
     day.running ? `✅ Löpning: ${day.running}` : "",
     day.gym ? `🏋️ Gym: ${day.gym}` : "",
     day.suggestedOrder ? `🔁 Ordning: ${day.suggestedOrder}` : "",
@@ -88,6 +100,9 @@ function buildText({
     day.heatSun ? `☀️ Värme/sol: ${day.heatSun}` : "",
     day.surpriseExercise ? `🎁 Dagens extra övning: ${day.surpriseExercise}` : "",
     day.reminders ? `🔔 Påminnelse: ${day.reminders}` : "",
+    weeklyOverview?.length ? "" : "",
+    weeklyOverview?.length ? "📆 Nästa veckas plan:" : "",
+    ...(weeklyOverview ?? []),
     ...warnings,
     "🌙 Undvik sen hård benträning - det kan försämra sömn och återhämtning.",
     "",
@@ -105,12 +120,16 @@ function buildHtml({
   weekday,
   dateLabel,
   warnings
+  ,recommendation
+  ,weeklyOverview
 }: {
   owner: string;
   day: DayPlan;
   weekday: string;
   dateLabel: string;
   warnings: string[];
+  recommendation?: DailyRecommendation;
+  weeklyOverview?: string[];
 }) {
   const rows = [
     ["✅", "Löpning", day.running],
@@ -131,6 +150,16 @@ function buildHtml({
         <p style="margin:0 0 12px;font-size:16px;color:#f4fff8;">Hej ${escapeHtml(owner)}!</p>
         <p style="margin:0;color:#8fa39b;font-size:14px;">📅 ${escapeHtml(dateLabel)}</p>
         <h1 style="margin:8px 0 18px;font-size:24px;line-height:1.25;color:#38ff7a;">🎯 ${escapeHtml(weekday)}: ${escapeHtml(day.headline)}</h1>
+        ${
+          recommendation
+            ? `<div style="margin:0 0 18px;padding:14px;border-radius:8px;background:#07100c;border:1px solid #2f6f57;">
+                <strong style="color:#38ff7a;">WHOOP: ${escapeHtml(recommendation.title)}</strong>
+                <p style="margin:8px 0;color:#f4fff8;">${escapeHtml(recommendation.training)}</p>
+                <p style="margin:8px 0 0;color:#8fa39b;font-size:13px;">${escapeHtml(recommendation.reason)}</p>
+                <p style="margin:8px 0 0;color:#c9d8d1;font-size:13px;">Igår: ${escapeHtml(recommendation.yesterdaySummary)}</p>
+              </div>`
+            : ""
+        }
         <table style="width:100%;border-collapse:collapse;">
           ${rows
             .map(
@@ -144,6 +173,14 @@ function buildHtml({
             )
             .join("")}
         </table>
+        ${
+          weeklyOverview?.length
+            ? `<div style="margin-top:18px;padding:14px;border-radius:8px;background:#101a24;border:1px solid #376d91;">
+                <strong style="color:#8fcaf1;">Nästa veckas plan</strong>
+                ${weeklyOverview.map((item) => `<p style="margin:7px 0;color:#dce9e4;">${escapeHtml(item)}</p>`).join("")}
+              </div>`
+            : ""
+        }
         ${
           warnings.length
             ? `<div style="margin-top:16px;padding:12px;border-radius:8px;background:#261b10;border:1px solid #ffb84d;color:#ffe2b8;">
@@ -167,3 +204,4 @@ function escapeHtml(value: string) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 }
+  
