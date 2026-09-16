@@ -119,7 +119,7 @@ export default function Home() {
         const data = await response.json().catch(() => ({}));
         throw new Error(data.error ?? "Send failed");
       }
-      setStatus(`Testmail skickat för ${weekdayLabels[activeDay].toLowerCase()}.`);
+      setStatus(`WHOOP-anpassat mejl skickat för ${weekdayLabels[activeDay].toLowerCase()}.`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kunde inte skicka testmail.");
     } finally {
@@ -190,8 +190,8 @@ export default function Home() {
             <button className="button primary" onClick={savePlan} disabled={busy} title="Spara planen">
               <Save size={18} /> Spara
             </button>
-            <button className="button" onClick={sendTestEmail} disabled={busy} title="Skicka testmail">
-              <Send size={18} /> Testmail
+            <button className="button" onClick={sendTestEmail} disabled={busy} title="Skicka dagens WHOOP-anpassade mejl">
+              <Send size={18} /> Skicka dagens mejl
             </button>
           </div>
         </div>
@@ -350,3 +350,4 @@ function PreviewRow({ icon, label, value }: { icon: string; label: string; value
     </div>
   );
 }
+  
