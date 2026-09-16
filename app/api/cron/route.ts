@@ -24,11 +24,11 @@ export async function GET(request: Request) {
     const plan = await readWeeklyPlan();
     const localHour = getHourInTimezone(plan.timezone);
 
-    if (localHour !== 7) {
+    if (localHour !== 10) {
       return NextResponse.json({
         ok: true,
         skipped: true,
-        reason: `Local hour in ${plan.timezone} is ${localHour}, not 7.`
+        reason: `Local hour in ${plan.timezone} is ${localHour}, not 10.`
       });
     }
 
