@@ -82,14 +82,14 @@ export async function saveWhoopRefreshToken(refreshToken: string) {
 }
 
 export async function getWhoopRefreshToken() {
-  const legacyToken = process.env.WHOOP_REFRESH_TOKEN;
-
-  if (legacyToken) {
-    return legacyToken;
+  try {
+    const stored = await redis(["GET", TOKEN_KEY]);
+    if (typeof stored === "string") return decrypt(stored);
+  } catch (error) {
+    if (!process.env.WHOOP_REFRESH_TOKEN) throw error;
   }
 
-  const stored = await redis(["GET", TOKEN_KEY]);
-  return typeof stored === "string" ? decrypt(stored) : null;
+  return process.env.WHOOP_REFRESH_TOKEN ?? null;
 }
 
 export async function isWhoopConnected() {

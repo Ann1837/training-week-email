@@ -130,6 +130,33 @@ button {
   overflow-wrap: anywhere;
 }
 
+.whoop-results {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.whoop-results article {
+  padding: 14px 16px;
+  background: #070b0a;
+  border: 1px solid #22312c;
+  border-radius: 8px;
+}
+
+.whoop-results h2,
+.whoop-results h3 {
+  margin: 0 0 6px;
+}
+
+.whoop-results h3 {
+  color: #38ff7a;
+  font-size: 15px;
+}
+
+.whoop-results article p {
+  margin: 0;
+}
+
 .shell {
   min-height: 100vh;
   display: grid;
