@@ -87,8 +87,10 @@ function buildText({
     `📅 ${dateLabel}`,
     `🎯 ${weekday}: ${day.headline}`,
     "",
-    recommendation ? `🟢 WHOOP-justering: ${recommendation.title}` : "",
-    recommendation ? `Dagens beslut: ${recommendation.training}` : "",
+    recommendation ? `WHOOP-bedömning: ${recommendation.title}` : "",
+    recommendation ? `Ursprungsplan: ${recommendation.originalPlan}` : "",
+    recommendation ? `Ändrad av WHOOP: ${recommendation.wasAdjusted ? "Ja" : "Nej"}` : "",
+    recommendation?.wasAdjusted ? `Ny plan: ${recommendation.training}` : "",
     recommendation ? `Varför: ${recommendation.reason}` : "",
     recommendation ? `Igår: ${recommendation.yesterdaySummary}` : "",
     recommendation ? "" : "",
@@ -154,7 +156,9 @@ function buildHtml({
           recommendation
             ? `<div style="margin:0 0 18px;padding:14px;border-radius:8px;background:#07100c;border:1px solid #2f6f57;">
                 <strong style="color:#38ff7a;">WHOOP: ${escapeHtml(recommendation.title)}</strong>
-                <p style="margin:8px 0;color:#f4fff8;">${escapeHtml(recommendation.training)}</p>
+                <p style="margin:8px 0;color:#f4fff8;"><strong>Ursprungsplan:</strong> ${escapeHtml(recommendation.originalPlan)}</p>
+                <p style="margin:8px 0;color:#f4fff8;"><strong>Ändrad av WHOOP:</strong> ${recommendation.wasAdjusted ? "Ja" : "Nej"}</p>
+                ${recommendation.wasAdjusted ? `<p style="margin:8px 0;color:#f4fff8;"><strong>Ny plan:</strong> ${escapeHtml(recommendation.training)}</p>` : ""}
                 <p style="margin:8px 0 0;color:#8fa39b;font-size:13px;">${escapeHtml(recommendation.reason)}</p>
                 <p style="margin:8px 0 0;color:#c9d8d1;font-size:13px;">Igår: ${escapeHtml(recommendation.yesterdaySummary)}</p>
               </div>`
