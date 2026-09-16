@@ -147,7 +147,7 @@ export default function Home() {
         <div className="brand">
           <CalendarDays size={32} />
           <h1>Training Week Briefing</h1>
-          <p>Dagliga mail 07:00 med bara dagens plan.</p>
+          <p>Dagliga mail omkring 10:00 med dagens WHOOP-anpassade plan.</p>
         </div>
         <div className="meta">
           <div className="meta-item">
