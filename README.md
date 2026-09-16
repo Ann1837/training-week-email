@@ -239,7 +239,7 @@ TRAINING_EMAIL_FROM=Training Briefing <training@yourdomain.com>
   "crons": [
     {
       "path": "/api/cron",
-      "schedule": "0 5 * * *"
+      "schedule": "0 8 * * *"
     },
     {
       "path": "/api/bryan-weekly",
@@ -253,7 +253,7 @@ TRAINING_EMAIL_FROM=Training Briefing <training@yourdomain.com>
 }
 ```
 
-Vercel cron schedules are UTC. Stockholm is UTC+2 during Swedish summer time, so `0 5 * * *` triggers during the 07:00 Stockholm hour in summer.
+Vercel cron schedules are UTC. Stockholm is UTC+2 during Swedish summer time, so `0 8 * * *` triggers during the 10:00 Stockholm hour in summer.
 Hanna's marathon plan uses `0 14 * * 0`, which is Sunday 16:00 Stockholm during Swedish summer time.
 The Bryan Johnson digest uses `0 17 * * 0`, which is Sunday 19:00 Stockholm during Swedish summer time.
 
@@ -262,13 +262,13 @@ For Vercel Hobby/free-tier use:
 - Keep only these three cron entries in `vercel.json`.
 - Do not add frequent cron jobs or polling.
 - The route checks the Stockholm local hour and skips if it is not 07.
-- Vercel Hobby may invoke the job at any point within the scheduled hour, so the email may arrive sometime during 07:00-07:59 Stockholm time.
+- Vercel Hobby may invoke the job at any point within the scheduled hour, so the email may arrive sometime during 10:00-10:59 Stockholm time.
 - The app has one daily training send, plus Hanna's Sunday email and Bryan's Sunday email. Absolute duplicate-proof delivery would require durable storage to record sent days; that is intentionally not included in the $0 setup.
 
 You need to change the cron expression twice per year if you stay on Vercel Hobby:
 
-- Summer time, CEST, UTC+2: `0 5 * * *`
-- Winter time, CET, UTC+1: `0 6 * * *`
+- Summer time, CEST, UTC+2: `0 8 * * *`
+- Winter time, CET, UTC+1: `0 9 * * *`
 
 For the Bryan Johnson Sunday digest:
 
@@ -316,7 +316,7 @@ Testing the deployed cron route manually:
 curl -fsS "https://your-domain.com/api/cron?secret=your-cron-secret"
 ```
 
-If you run this outside the 07:00 Europe/Stockholm hour, it should return `skipped: true`. That is expected and prevents accidental sends from the wrong UTC hour.
+If you run this outside the 10:00 Europe/Stockholm hour, it should return `skipped: true`. That is expected and prevents accidental sends from the wrong UTC hour.
 
 Testing a real deployed email manually:
 
@@ -486,3 +486,4 @@ On platforms with ephemeral filesystems, changes made through the admin page may
 On Vercel Hobby, the `Spara` button cannot permanently write to `data/weekly-plan.json`. For permanent weekly-plan changes, edit `data/weekly-plan.json` in GitHub or locally, commit, push, and let Vercel redeploy. The `Testmail` button can still send the plan currently visible on screen without saving it first.
 
 The deployed admin page is public, but save and real test-email sends are protected by `ADMIN_SECRET` when configured. Do not share the production URL broadly.
+  
