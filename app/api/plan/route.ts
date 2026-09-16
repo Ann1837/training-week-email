@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { hasValidAdminSecret } from "@/lib/auth";
 import { readWeeklyPlan, writeWeeklyPlan } from "@/lib/plan-store";
+import { getCurrentMasterPlanWeek } from "@/lib/marathon-plan";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const plan = await readWeeklyPlan();
-  return NextResponse.json(plan);
+  return NextResponse.json(getCurrentMasterPlanWeek(plan));
 }
 
 export async function PUT(request: Request) {
@@ -36,3 +37,4 @@ export async function PUT(request: Request) {
     );
   }
 }
+  
