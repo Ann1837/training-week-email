@@ -7,6 +7,14 @@ type LatestData = {
   recovery: { updated_at: string; score_state: string; score?: { recovery_score: number; resting_heart_rate: number; hrv_rmssd_milli: number; spo2_percentage?: number } } | null;
   sleep: { start: string; end: string; score_state: string; score?: { stage_summary: { total_in_bed_time_milli: number; total_awake_time_milli: number }; sleep_performance_percentage: number; sleep_efficiency_percentage: number; respiratory_rate: number } } | null;
   workout: { start: string; end: string; sport_name: string; score_state: string; score?: { strain: number; average_heart_rate: number; max_heart_rate: number; distance_meter?: number } } | null;
+  yesterdayWorkouts: Array<{ start: string; end: string; sport_name: string; score_state: string; score?: { strain: number; average_heart_rate: number; max_heart_rate: number; distance_meter?: number } }>;
+  recommendation: {
+    level: "green" | "yellow" | "red" | "unknown";
+    title: string;
+    training: string;
+    reason: string;
+    yesterdaySummary: string;
+  };
   fetchedAt: string;
 };
 
@@ -122,6 +130,12 @@ function WhoopLatest({ data }: { data: LatestData }) {
   return (
     <section className="whoop-results">
       <h2>Senaste WHOOP-data</h2>
+      <article className={`whoop-recommendation ${data.recommendation.level}`}>
+        <h3>Dagens rekommendation</h3>
+        <p><strong>{data.recommendation.title}</strong></p>
+        <p>{data.recommendation.training}</p>
+        <p className="whoop-detail">{data.recommendation.reason}</p>
+      </article>
       <article>
         <h3>Recovery</h3>
         {recovery ? (
@@ -135,16 +149,24 @@ function WhoopLatest({ data }: { data: LatestData }) {
         ) : <p>Ingen färdig sömn hittades.</p>}
       </article>
       <article>
-        <h3>Senaste workout</h3>
-        {workout?.score ? (
-          <p>{workout.sport_name} · {formatDuration(new Date(workout.end).getTime() - new Date(workout.start).getTime())} · Strain {workout.score.strain.toFixed(1)} · Puls {workout.score.average_heart_rate}/{workout.score.max_heart_rate} bpm{workout.score.distance_meter ? ` · ${(workout.score.distance_meter / 1000).toFixed(2)} km` : ""}</p>
-        ) : <p>Ingen färdig workout hittades.</p>}
+        <h3>Gårdagens aktiviteter</h3>
+        <p>{data.recommendation.yesterdaySummary}</p>
+      </article>
+      <article>
+        <h3>Senaste registrerade aktivitet</h3>
+        {workout?.score ? <p>{formatWorkout(workout)}</p> : <p>Ingen färdig workout hittades.</p>}
       </article>
     </section>
   );
+}
+
+function formatWorkout(workout: LatestData["workout"] extends infer T ? Exclude<T, null> : never) {
+  if (!workout.score) return workout.sport_name;
+  return `${workout.sport_name} · ${formatDuration(new Date(workout.end).getTime() - new Date(workout.start).getTime())} · Strain ${workout.score.strain.toFixed(1)} · Puls ${workout.score.average_heart_rate}/${workout.score.max_heart_rate} bpm${workout.score.distance_meter ? ` · ${(workout.score.distance_meter / 1000).toFixed(2)} km` : ""}`;
 }
 
 function formatDuration(milliseconds: number) {
   const totalMinutes = Math.max(0, Math.round(milliseconds / 60000));
   return `${Math.floor(totalMinutes / 60)} h ${totalMinutes % 60} min`;
 }
+  
