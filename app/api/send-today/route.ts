@@ -3,6 +3,10 @@ import { hasValidAdminSecret } from "@/lib/auth";
 import { buildTodayEmail, sendTrainingEmail } from "@/lib/email";
 import { readWeeklyPlan, validatePlan } from "@/lib/plan-store";
 import { WeekdayKey, WeeklyPlan } from "@/lib/types";
+import { getTodayInTimezone } from "@/lib/dates";
+import { getLatestWhoopData } from "@/lib/whoop-data";
+import { buildDailyRecommendation } from "@/lib/training-coach";
+import { getMarathonBlockDay } from "@/lib/marathon-plan";
 
 export async function POST(request: Request) {
   try {
@@ -26,7 +30,25 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const email = await sendTrainingEmail({ plan, dayKey: body.dayKey });
+    const today = getTodayInTimezone(plan.timezone);
+    const selectedDay = body.dayKey ?? today.weekdayKey;
+    const planned = getMarathonBlockDay(selectedDay, plan.days[selectedDay]);
+    plan.days[selectedDay] = planned;
+
+    let recommendation;
+    try {
+      const whoop = await getLatestWhoopData(request.url);
+      recommendation = buildDailyRecommendation({
+        planned,
+        recovery: whoop.recovery,
+        sleep: whoop.sleep,
+        yesterdayWorkouts: whoop.yesterdayWorkouts
+      });
+    } catch (error) {
+      console.error("WHOOP kunde inte läsas; skickar grundplanen.", error);
+    }
+
+    const email = await sendTrainingEmail({ plan, dayKey: selectedDay, recommendation });
     return NextResponse.json({ ok: true, dryRun: false, email });
   } catch (error) {
     return NextResponse.json(
@@ -35,3 +57,4 @@ export async function POST(request: Request) {
     );
   }
 }
+  
