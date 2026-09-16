@@ -14,6 +14,8 @@ type LatestData = {
     training: string;
     reason: string;
     yesterdaySummary: string;
+    originalPlan: string;
+    wasAdjusted: boolean;
   };
   fetchedAt: string;
 };
@@ -133,7 +135,9 @@ function WhoopLatest({ data }: { data: LatestData }) {
       <article className={`whoop-recommendation ${data.recommendation.level}`}>
         <h3>Dagens rekommendation</h3>
         <p><strong>{data.recommendation.title}</strong></p>
-        <p>{data.recommendation.training}</p>
+        <p><strong>Ursprungsplan:</strong> {data.recommendation.originalPlan}</p>
+        <p><strong>Ändrad av WHOOP:</strong> {data.recommendation.wasAdjusted ? "Ja" : "Nej"}</p>
+        {data.recommendation.wasAdjusted ? <p><strong>Ny plan:</strong> {data.recommendation.training}</p> : null}
         <p className="whoop-detail">{data.recommendation.reason}</p>
       </article>
       <article>
