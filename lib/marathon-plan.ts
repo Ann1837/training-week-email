@@ -77,6 +77,22 @@ export function getNextWeekOverview(weeklyPlan: WeeklyPlan, now = new Date()) {
   });
 }
 
+export function getCurrentMasterPlanWeek(weeklyPlan: WeeklyPlan, now = new Date()): WeeklyPlan {
+  const weekdayName = new Intl.DateTimeFormat("en-US", { timeZone: weeklyPlan.timezone, weekday: "short" }).format(now);
+  const weekdayIndex = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(weekdayName);
+  const monday = new Date(`${dateKey(now)}T12:00:00Z`);
+  monday.setUTCDate(monday.getUTCDate() - ((weekdayIndex + 6) % 7));
+
+  const days = { ...weeklyPlan.days };
+  weekdayKeys.forEach((dayKey, index) => {
+    const date = new Date(monday);
+    date.setUTCDate(monday.getUTCDate() + index);
+    days[dayKey] = getMarathonBlockDay(dayKey, weeklyPlan.days[dayKey], date);
+  });
+
+  return { ...weeklyPlan, days };
+}
+
 function dateKey(date: Date) {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
 }
