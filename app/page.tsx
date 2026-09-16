@@ -47,6 +47,7 @@ export default function Home() {
 
   useEffect(() => {
     setAdminSecret(window.localStorage.getItem("training-admin-secret") ?? "");
+    setActiveDay(weekdayKeys[(new Date().getDay() + 6) % 7]);
     void loadPlan();
   }, []);
 
