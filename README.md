@@ -94,8 +94,8 @@ WHOOP_CLIENT_ID=your-whoop-client-id
 WHOOP_CLIENT_SECRET=your-whoop-client-secret
 WHOOP_REDIRECT_URI=https://training-week-email.vercel.app/api/whoop/callback
 WHOOP_API_HOSTNAME=https://api.prod.whoop.com
-UPSTASH_REDIS_REST_URL=your-upstash-rest-url
-UPSTASH_REDIS_REST_TOKEN=your-upstash-rest-token
+UPSTASH_KV_REST_API_URL=your-upstash-rest-url
+UPSTASH_KV_REST_API_TOKEN=your-upstash-rest-token
 ```
 
 `TRAINING_EMAIL_FROM` must be a sender/domain verified in Resend. `ADMIN_SECRET` protects save and manual test-email actions so strangers cannot create email usage.
@@ -126,8 +126,8 @@ WHOOP_CLIENT_ID=your-whoop-client-id
 WHOOP_CLIENT_SECRET=your-whoop-client-secret
 WHOOP_REDIRECT_URI=https://training-week-email.vercel.app/api/whoop/callback
 WHOOP_API_HOSTNAME=https://api.prod.whoop.com
-UPSTASH_REDIS_REST_URL=your-upstash-rest-url
-UPSTASH_REDIS_REST_TOKEN=your-upstash-rest-token
+UPSTASH_KV_REST_API_URL=your-upstash-rest-url
+UPSTASH_KV_REST_API_TOKEN=your-upstash-rest-token
 ```
 
 After adding or changing these variables, redeploy the project.
@@ -141,7 +141,7 @@ To connect WHOOP:
 5. You are returned to `/whoop`, which shows `WHOOP connected`.
 6. Use “Kontrollera anslutning” later to verify the stored connection.
 
-The callback stores the refresh token encrypted in Vercel KV/Upstash Redis. The token is never returned to the browser. Create a free Redis database through the Vercel Marketplace and connect it to the project so `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are available. The older `KV_REST_API_URL` and `KV_REST_API_TOKEN` names are also supported.
+The callback stores the refresh token encrypted in Vercel KV/Upstash Redis. The token is never returned to the browser. Create a free Redis database through the Vercel Marketplace and connect it to the project so `UPSTASH_KV_REST_API_URL` and `UPSTASH_KV_REST_API_TOKEN` are available. The older `KV_REST_API_*` and `UPSTASH_REDIS_REST_*` names are also supported.
 
 ## Actual Scheduled Email Function
 
