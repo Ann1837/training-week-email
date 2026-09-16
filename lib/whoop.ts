@@ -1,8 +1,5 @@
 import { randomBytes } from "crypto";
 
-const WHOOP_AUTH_URL = "https://api.prod.whoop.com/oauth/oauth2/auth";
-const WHOOP_TOKEN_URL = "https://api.prod.whoop.com/oauth/oauth2/token";
-
 export type WhoopTokenResponse = {
   access_token: string;
   expires_in: number;
@@ -13,19 +10,22 @@ export type WhoopTokenResponse = {
 
 export function getWhoopConfig(requestUrl: string) {
   const origin = new URL(requestUrl).origin;
+  const apiHostname = (process.env.WHOOP_API_HOSTNAME ?? "https://api.prod.whoop.com").replace(
+    /\/$/,
+    ""
+  );
 
   return {
+    apiHostname,
     clientId: process.env.WHOOP_CLIENT_ID,
     clientSecret: process.env.WHOOP_CLIENT_SECRET,
     redirectUri: process.env.WHOOP_REDIRECT_URI ?? `${origin}/api/whoop/callback`,
-    scopes:
-      process.env.WHOOP_SCOPES ??
-      "offline read:recovery read:sleep read:cycles read:workout"
+    scopes: "read:recovery read:sleep read:workout offline"
   };
 }
 
 export function createWhoopState() {
-  return randomBytes(8).toString("base64url").slice(0, 8);
+  return randomBytes(6).toString("base64url");
 }
 
 export function buildWhoopAuthorizationUrl(requestUrl: string, state: string) {
@@ -35,7 +35,7 @@ export function buildWhoopAuthorizationUrl(requestUrl: string, state: string) {
     throw new Error("WHOOP_CLIENT_ID saknas.");
   }
 
-  const url = new URL(WHOOP_AUTH_URL);
+  const url = new URL("/oauth/oauth2/auth", config.apiHostname);
   url.searchParams.set("response_type", "code");
   url.searchParams.set("client_id", config.clientId);
   url.searchParams.set("redirect_uri", config.redirectUri);
@@ -64,7 +64,7 @@ export async function exchangeWhoopCode(requestUrl: string, code: string) {
     redirect_uri: config.redirectUri
   });
 
-  const response = await fetch(WHOOP_TOKEN_URL, {
+  const response = await fetch(new URL("/oauth/oauth2/token", config.apiHostname), {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"

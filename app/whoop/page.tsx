@@ -1,10 +1,17 @@
 "use client";
 
 import { Activity } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function WhoopPage() {
   const [adminSecret, setAdminSecret] = useState("");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("connected") === "1") setMessage("✓ WHOOP connected");
+    if (params.get("error")) setMessage(params.get("error") ?? "WHOOP-kopplingen misslyckades.");
+  }, []);
 
   function startWhoopLogin() {
     const params = new URLSearchParams();
@@ -13,7 +20,22 @@ export default function WhoopPage() {
       params.set("adminSecret", adminSecret);
     }
 
-    window.location.href = `/api/whoop/start?${params.toString()}`;
+    window.location.href = `/api/whoop/login?${params.toString()}`;
+  }
+
+  async function checkStatus() {
+    setMessage("Kontrollerar …");
+    const response = await fetch(`/api/whoop/status?adminSecret=${encodeURIComponent(adminSecret)}`);
+    const data = (await response.json()) as { connected?: boolean; error?: string };
+    setMessage(
+      response.ok
+        ? data.connected
+          ? "✓ WHOOP connected"
+          : "WHOOP not connected"
+        : data.error === "Unauthorized"
+          ? "Fel admin secret."
+          : data.error ?? "Statuskontrollen misslyckades."
+    );
   }
 
   return (
@@ -25,8 +47,8 @@ export default function WhoopPage() {
           WHOOP-koppling
         </h1>
         <p>
-          Logga in med WHOOP här. Efter login får du en refresh token som ska läggas in i Vercel som
-          environment variable.
+          Logga in med WHOOP här. Efter login sparas anslutningen krypterat så att appen kan använda
+          den senare utan att du behöver logga in igen.
         </p>
 
         <label className="secret-field whoop-secret">
@@ -42,6 +64,12 @@ export default function WhoopPage() {
         <button className="button primary whoop-button" onClick={startWhoopLogin}>
           Starta WHOOP-login
         </button>
+
+        <button className="button whoop-button" onClick={checkStatus}>
+          Kontrollera anslutning
+        </button>
+
+        {message ? <p className="whoop-note" role="status">{message}</p> : null}
 
         <p className="whoop-note">
           Redirect URL i WHOOP ska vara{" "}

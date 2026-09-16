@@ -93,8 +93,9 @@ ADMIN_SECRET=change-me-too
 WHOOP_CLIENT_ID=your-whoop-client-id
 WHOOP_CLIENT_SECRET=your-whoop-client-secret
 WHOOP_REDIRECT_URI=https://training-week-email.vercel.app/api/whoop/callback
-WHOOP_SCOPES=offline read:recovery read:sleep read:cycles read:workout
-WHOOP_REFRESH_TOKEN=add-this-after-whoop-login
+WHOOP_API_HOSTNAME=https://api.prod.whoop.com
+UPSTASH_REDIS_REST_URL=your-upstash-rest-url
+UPSTASH_REDIS_REST_TOKEN=your-upstash-rest-token
 ```
 
 `TRAINING_EMAIL_FROM` must be a sender/domain verified in Resend. `ADMIN_SECRET` protects save and manual test-email actions so strangers cannot create email usage.
@@ -124,7 +125,9 @@ In Vercel, add these Production environment variables:
 WHOOP_CLIENT_ID=your-whoop-client-id
 WHOOP_CLIENT_SECRET=your-whoop-client-secret
 WHOOP_REDIRECT_URI=https://training-week-email.vercel.app/api/whoop/callback
-WHOOP_SCOPES=offline read:recovery read:sleep read:cycles read:workout
+WHOOP_API_HOSTNAME=https://api.prod.whoop.com
+UPSTASH_REDIS_REST_URL=your-upstash-rest-url
+UPSTASH_REDIS_REST_TOKEN=your-upstash-rest-token
 ```
 
 After adding or changing these variables, redeploy the project.
@@ -135,11 +138,10 @@ To connect WHOOP:
 2. Enter `ADMIN_SECRET`.
 3. Click `Starta WHOOP-login`.
 4. Log in at WHOOP and approve the scopes.
-5. Copy the shown `WHOOP_REFRESH_TOKEN`.
-6. Add it in Vercel as a Production environment variable named `WHOOP_REFRESH_TOKEN`.
-7. Redeploy the project.
+5. You are returned to `/whoop`, which shows `WHOOP connected`.
+6. Use “Kontrollera anslutning” later to verify the stored connection.
 
-The callback does not save tokens to a paid database. It shows the refresh token once so you can store it in Vercel environment variables for this private $0 setup.
+The callback stores the refresh token encrypted in Vercel KV/Upstash Redis. The token is never returned to the browser. Create a free Redis database through the Vercel Marketplace and connect it to the project so `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are available. The older `KV_REST_API_URL` and `KV_REST_API_TOKEN` names are also supported.
 
 ## Actual Scheduled Email Function
 
